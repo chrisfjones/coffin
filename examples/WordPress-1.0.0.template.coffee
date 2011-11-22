@@ -1,3 +1,4 @@
+# from https://s3.amazonaws.com/cloudformation-templates-us-east-1/WordPress-1.0.0.template
 require('../lib/coffeecloud') ->
   @Params
     KeyName:
