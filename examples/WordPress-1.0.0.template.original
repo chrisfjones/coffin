@@ -376,7 +376,6 @@
       "Type": "AWS::AutoScaling::LaunchConfiguration"
     }
   },
-  "Description": "WordPress is web software you can use to create a beautiful website or blog.",
   "Mappings": {
     "AWSInstanceType2Arch" : {
       "t1.micro"    : { "Arch" : "64" },

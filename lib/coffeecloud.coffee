@@ -22,15 +22,21 @@ class CloudFormationTemplateContext
         DBSecurityGroup: null
         DBInstance: null
     @Param =
-      String: (name, props) => @_paramByType 'String', name, props
-      Number: (name, props) => @_paramByType 'Number', name, props
-      CommaDelimitedList: (name, props) => @_paramByType 'CommaDelimitedList', name, props
+      String: (name, args...) => @_paramByType 'String', name, args[0], args[1]
+      Number: (name, args...) => @_paramByType 'Number', name, args[0], args[1]
+      CommaDelimitedList: (name, args...) => @_paramByType 'CommaDelimitedList', name, args[0], args[1]
     @_buildCall null, null, 'AWS', @AWS
 
-  _paramByType: (type, name, props) =>
+  _paramByType: (type, name, args...) =>
     result = {}
-    result[name] = props
-    props.Type = type
+    if typeof args[1] is 'object'
+      result[name] = args[1]
+      result[name].Description = args[0]
+    else if typeof args[0] is 'object'
+      result[name] = args[0]
+    else if typeof args[0] is 'string'
+      result[name] = Description: args[0]
+    result[name].Type = type
     @_set result, @_parameters
     @Params[name] = Ref: name
 
@@ -42,23 +48,31 @@ class CloudFormationTemplateContext
       for key, val of leaf
         @_buildCall leaf, key, "#{awsType}::#{key}", val
 
+  # todo: this cheesy forward decl thing shouldn't be necessary
+  DeclareResource: (name) =>
+    @Resources[name] ?= Ref: name
+
   _resourceByType: (type, name, props) =>
     result = {}
     result[name] =
       Type: type
       Properties: props
     @_set result, @_resources
-    @Resources[name] = Ref: name
+    @DeclareResource name
 
   _set: (source, target) ->
     for key, val of source
       target[key] = val
 
-  Output: (name, props) =>
-    #todo: support description
+  Output: (name, args...) =>
     result = {}
-    result[name] =
-      Value: props
+    if args.length is 1
+      result[name] =
+        Value: args[0]
+    if args.length is 2
+      result[name] =
+        Description: args[0]
+        Value: args[1]
     @_set result, @_outputs
 
   Description: (d) => @_description = d
@@ -74,4 +88,3 @@ module.exports = (func) ->
     Parameters:               context._parameters
     Resources:                context._resources
     Outputs:                  context._outputs
-  console.log JSON.stringify template, null, 2

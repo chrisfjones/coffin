@@ -1,53 +1,49 @@
 # from https://s3.amazonaws.com/cloudformation-templates-us-east-1/WordPress-1.0.0.template
-require('../lib/coffeecloud') ->
+result = require('../lib/coffeecloud') ->
   @Description '''
 WordPress is web software you can use to create a beautiful website or blog. This template creates a scalable WordPress installation using an Auto Scaling group behind an Elastic Load Balancer along with an Amazon Relational Database Service database instance to store the content. **WARNING** This template creates one or more Amazon EC2 instances and an Amazon Relational Database Service database instance. You will be billed for the AWS resources used if you create a stack from this template.
 '''
-
-  @Param.String 'KeyName',
-    Description: 'Name of an existing EC2 KeyPair to enable SSH access into the WordPress web server'
+  @Param.String 'KeyName', 'Name of an existing EC2 KeyPair to enable SSH access into the WordPress web server'
   @Param.String 'WordPressDBName',
-    Description: 'The WordPress database name',
-    Default: 'wordpress',
-    MinLength: '1',
-    MaxLength: '64',
-    AllowedPattern: '[^\x00\\/.]*[^\x00\\/. ]'
-  @Param.String 'WordPressUser',
-    Description : 'The WordPress database admin account username'
+    Description: 'The WordPress database name'
+    Default: 'wordpress'
+    MinLength: '1'
+    MaxLength: '64'
+    AllowedPattern: "[^\\x00\\\\/.]*[^\\x00\\\\/. ]"
+  @Param.String 'WordPressUser', 'The WordPress database admin account username'
     Default: 'admin'
     NoEcho: 'true'
     MinLength: '1'
     MaxLength: '16'
     AllowedPattern : '[a-zA-Z][a-zA-Z0-9]*'
-  @Param.String 'WordPressPwd',
-    Description : 'The WordPress database admin account password'
+  @Param.String 'WordPressPwd', 'The WordPress database admin account password'
     Default: 'admin'
     NoEcho: 'true'
     MinLength: '1'
     MaxLength: '41'
     AllowedPattern : '[a-zA-Z0-9]*'
-  @Param.Number 'GroupSize',
-    Description : 'The initial number of EC2 instances for the WordPress web server'
+  @Param.Number 'GroupSize', 'The initial number of EC2 instances for the WordPress web server'
     Default: '1'
     MinValue: '0'
-  @Param.String 'InstanceType',
-    Description : 'The type of EC2 instances used for the WordPress web server'
+  @Param.String 'InstanceType', 'The type of EC2 instances used for the WordPress web server'
     Default: 'm1.small'
     AllowedPattern : '[a-zA-Z0-9\\.]+'
-  @Param.String 'OperatorEmail',
-    Description: 'Email address to notify if there are any operational issues'
+  @Param.String 'OperatorEmail', 'Email address to notify if there are any operational issues'
     Default: 'nobody@amazon.com'
   maxPort = '65535'
-  @Param.Number 'WordPressDBPort'
-    Description : 'TCP/IP port for the WordPress database'
+  @Param.Number 'WordPressDBPort', 'TCP/IP port for the WordPress database'
     Default: '3306'
     MinValue: '1150'
     MaxValue: maxPort
-  @Param.Number 'WebServerPort',
-    Description : 'TCP/IP port for the WordPress web server'
+  @Param.Number 'WebServerPort', 'TCP/IP port for the WordPress web server'
     Default: '8888'
     MinValue: '1'
     MaxValue: maxPort
+
+  #forward declaration, kinda cheesy for the moment
+  @DeclareResource 'WebServerGroup'
+  @DeclareResource 'ElasticLoadBalancer'
+  @DeclareResource 'LaunchConfig'
 
   @AWS.SNS.Topic 'AlarmTopic',
     Subscription: [
@@ -64,8 +60,11 @@ WordPress is web software you can use to create a beautiful website or blog. Thi
     AlarmActions: [ @Resources.AlarmTopic ]
     Namespace: 'AWS/EC2'
     InsufficientDataActions: [ @Resources.AlarmTopic ]
-    Dimensions: Name: 'AutoScalingGroupName', Value: @Resources.WebServerGroup
-    ComparisonOperator: 'GreaterThanThreshold'
+    Dimensions: [
+      Name: 'AutoScalingGroupName'
+      Value: @Resources.WebServerGroup
+    ]
+    ComparisonOperator: 'GreaterThanThreshold',
     MetricName: 'CPUUtilization'
   @AWS.CloudWatch.Alarm 'TooManyUnhealthyHostsAlarm',
     AlarmDescription: 'Alarm if there are too many unhealthy hosts.'
@@ -80,7 +79,7 @@ WordPress is web software you can use to create a beautiful website or blog. Thi
     ComparisonOperator: 'GreaterThanThreshold'
     MetricName: 'UnHealthyHostCount'
   @AWS.CloudWatch.Alarm 'RequestLatencyAlarmHigh',
-    AlarmDescription: "Alarm if there aren't any requests coming through."
+    AlarmDescription: "Alarm if there aren't any requests coming through"
     EvaluationPeriods: '1'
     Statistic: 'Average'
     Threshold: '1'
@@ -90,7 +89,7 @@ WordPress is web software you can use to create a beautiful website or blog. Thi
     InsufficientDataActions: [ @Resources.AlarmTopic ]
     Dimensions: [ Name: 'LoadBalancerName', Value: @Resources.ElasticLoadBalancer ]
     ComparisonOperator: 'GreaterThanThreshold'
-    MetricName: 'UnHealthyHostCount'
+    MetricName: 'Latency'
   @AWS.EC2.SecurityGroup 'EC2SecurityGroup',
     GroupDescription: 'HTTP and SSH access'
     SecurityGroupIngress: [
@@ -220,7 +219,7 @@ WordPress is web software you can use to create a beautiful website or blog. Thi
     KeyName: @Params.KeyName
     InstanceType: @Params.InstanceType
 
-  @Output 'InstallURL',
+  @Output 'InstallURL', 'Installation URL of the WordPress website',
     'Fn::Join': [ '', [
       'http://',
       'Fn::GetAtt': [
@@ -239,3 +238,5 @@ WordPress is web software you can use to create a beautiful website or blog. Thi
         ]
       ]
     ]
+
+module.exports = result
