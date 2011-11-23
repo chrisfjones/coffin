@@ -77,6 +77,22 @@ class CloudFormationTemplateContext
 
   Description: (d) => @_description = d
 
+  #utility functions
+  Join: (delimiter, args...) ->
+    'Fn::Join': [ delimiter, args ]
+  FindInMap: (args...) ->
+    'Fn::FindInMap': args
+  GetAtt: (args...) ->
+    'Fn::GetAtt': args
+  Base64: (arg) ->
+    'Fn::Base64': arg
+  GetAZs: (arg) ->
+    'Fn::GetAZs': arg
+  Region: ->
+    'AWS::Region'
+  StackName: ->
+    'AWS::StackName'
+
 module.exports.CloudFormationTemplateContext = CloudFormationTemplateContext
 
 module.exports = (func) ->

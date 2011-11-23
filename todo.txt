@@ -1,0 +1,9 @@
+- dependency declaration
+  - possibly allow resources to depend on eachother directly and do the wait condition/handle stuff implicitly
+- mappings
+- flesh out all 
+- add simple description support (as it exists on Param) for all resource types (the ones that support descriptions anyway)
+- simplify GetAtt functions by putting properties on Resources
+  - @GetAtt 'MyResource', 'MyProperty' 
+    becomes
+    @Resource.MyResource.MyProperty

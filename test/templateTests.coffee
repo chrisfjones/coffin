@@ -26,7 +26,7 @@ suite.addBatch
       input.on 'end', =>
         generatedTemplate = require('../examples/WordPress-1.0.0.template.coffee')
         originalTemplate = JSON.parse(raw)
-        console.log "generatedTemplate - #{JSON.stringify(generatedTemplate).length}, originalTemplate - #{JSON.stringify(originalTemplate).length}"
+        #console.log "generatedTemplate - #{JSON.stringify(generatedTemplate).length}, originalTemplate - #{JSON.stringify(originalTemplate).length}"
         @callback originalTemplate, generatedTemplate
       return
     'Descriptions are the same': (originalTemplate, generatedTemplate) =>
