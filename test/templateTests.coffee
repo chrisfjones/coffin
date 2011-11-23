@@ -56,5 +56,18 @@ suite.addBatch
       assert.ok topic.Resources.scalePolicy?
     'short param is good': (topic) ->
       assert.ok topic.Parameters.shortParam?
+  'when using a blank template':
+    topic: ->
+      coffeecloud ->
+    'it is not null': (topic) ->
+      assert.ok topic?
+    'there is no description': (topic) ->
+      assert.ok Object.keys(topic).indexOf('Description') is -1
+    'there is a Parameters block': (topic) ->
+      assert.ok topic.Parameters?
+    'there is a Resources block': (topic) ->
+      assert.ok topic.Resources?
+    'there is a Outputs block': (topic) ->
+      assert.ok topic.Outputs?
 
 suite.run()

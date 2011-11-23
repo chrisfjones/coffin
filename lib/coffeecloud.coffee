@@ -99,7 +99,8 @@ module.exports = (func) ->
   func.apply context, [context]
   template =
     AWSTemplateFormatVersion: '2010-09-09'
-    Description:              context._description
-    Parameters:               context._parameters
-    Resources:                context._resources
-    Outputs:                  context._outputs
+  template.Description = context._description if context._description?
+  template.Parameters  = context._parameters
+  template.Resources   = context._resources
+  template.Outputs     = context._outputs
+  template
