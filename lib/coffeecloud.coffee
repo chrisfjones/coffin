@@ -88,10 +88,8 @@ class CloudFormationTemplateContext
     'Fn::Base64': arg
   GetAZs: (arg) ->
     'Fn::GetAZs': arg
-  Region: ->
-    'AWS::Region'
-  StackName: ->
-    'AWS::StackName'
+  Region: 'AWS::Region'
+  StackName: 'AWS::StackName'
 
 module.exports.CloudFormationTemplateContext = CloudFormationTemplateContext
 
