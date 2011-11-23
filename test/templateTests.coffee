@@ -46,9 +46,15 @@ suite.addBatch
     topic: ->
       coffeecloud ->
         @AWS.AutoScaling.ScalingPolicy 'scalePolicy'
-    'scaling policy is good': (topic) =>
+        @Param.String 'shortParam'
+    'it does not break': (topic) ->
       assert.ok topic?
+      assert.ok topic.Parameters?
       assert.ok topic.Resources?
+      assert.ok topic.Outputs?
+    'scaling policy is good': (topic) ->
       assert.ok topic.Resources.scalePolicy?
+    'short param is good': (topic) ->
+      assert.ok topic.Parameters.shortParam?
 
 suite.run()

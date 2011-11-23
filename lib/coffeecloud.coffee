@@ -23,20 +23,20 @@ class CloudFormationTemplateContext
         DBSecurityGroup: null
         DBInstance: null
     @Param =
-      String: (name, args...) => @_paramByType 'String', name, args[0], args[1]
-      Number: (name, args...) => @_paramByType 'Number', name, args[0], args[1]
-      CommaDelimitedList: (name, args...) => @_paramByType 'CommaDelimitedList', name, args[0], args[1]
+      String: (name, arg1, arg2) =>             @_paramByType 'String', name, arg1, arg2
+      Number: (name, arg1, arg2) =>             @_paramByType 'Number', name, arg1, arg2
+      CommaDelimitedList: (name, arg1, arg2) => @_paramByType 'CommaDelimitedList', name, arg1, arg2
     @_buildCall null, null, 'AWS', @AWS
 
-  _paramByType: (type, name, args...) =>
+  _paramByType: (type, name, arg1, arg2) =>
     result = {}
-    if typeof args[1] is 'object'
-      result[name] = args[1]
-      result[name].Description = args[0]
-    else if typeof args[0] is 'object'
-      result[name] = args[0]
-    else if typeof args[0] is 'string'
-      result[name] = Description: args[0]
+    if not arg1?
+      result[name] = {}
+    else if not arg2?
+      result[name] = if typeof arg1 is 'string' then Description: arg1 else arg1
+    else
+      result[name] = arg2
+      result[name].Description = arg1
     result[name].Type = type
     @_set result, @_parameters
     @Params[name] = Ref: name
