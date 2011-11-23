@@ -10,6 +10,7 @@ class CloudFormationTemplateContext
       AutoScaling:
         AutoScalingGroup: null
         LaunchConfiguration: null
+        ScalingPolicy: null
       CloudWatch:
         Alarm: null
       EC2:
@@ -41,12 +42,12 @@ class CloudFormationTemplateContext
     @Params[name] = Ref: name
 
   _buildCall: (parent, lastKey, awsType, leaf) =>
-    if leaf is null
-      parent[lastKey] = (name, props) =>
-        @_resourceByType awsType, name, props
-    else
+    if leaf?
       for key, val of leaf
         @_buildCall leaf, key, "#{awsType}::#{key}", val
+      return
+    parent[lastKey] = (name, props) =>
+      @_resourceByType awsType, name, props
 
   # todo: this cheesy forward decl thing shouldn't be necessary
   DeclareResource: (name) =>

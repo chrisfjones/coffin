@@ -1,7 +1,8 @@
-vows   = require 'vows'
-assert = require 'assert'
-fs     = require 'fs'
-path   = require 'path'
+vows        = require 'vows'
+assert      = require 'assert'
+fs          = require 'fs'
+path        = require 'path'
+coffeecloud = require '../lib/coffeecloud'
 
 @assertListsEqual = (actualList, expectedList) ->
   assert.equal actualList.length, expectedList.length
@@ -41,4 +42,13 @@ suite.addBatch
     'Outputs are the same': (originalTemplate, generatedTemplate) =>
       return if originalTemplate is null or generatedTemplate is null
       @assertListsEqual generatedTemplate.Outputs, originalTemplate.Outputs
+  'when using resource types':
+    topic: ->
+      coffeecloud ->
+        @AWS.AutoScaling.ScalingPolicy 'scalePolicy'
+    'scaling policy is good': (topic) =>
+      assert.ok topic?
+      assert.ok topic.Resources?
+      assert.ok topic.Resources.scalePolicy?
+
 suite.run()
