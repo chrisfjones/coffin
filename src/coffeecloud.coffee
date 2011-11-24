@@ -1,11 +1,13 @@
 class CloudFormationTemplateContext
   constructor: ->
-    @_resources = {}
-    @_parameters = {}
-    @_outputs = {}
+    @_resources   = {}
+    @_parameters  = {}
+    @_mappings    = {}
+    @_outputs     = {}
     @_description = null
-    @Params = {}
-    @Resources = {}
+    @Params       = {}
+    @Resources    = {}
+    @Mappings     = {}
     @AWS =
       AutoScaling:
         AutoScalingGroup: null
@@ -97,6 +99,11 @@ class CloudFormationTemplateContext
     for key, val of source
       target[key] = val
 
+  Mapping: (name, map) =>
+    result = {}
+    result[name] = map
+    @_set result, @_mappings
+
   Output: (name, args...) =>
     result = {}
     if args.length is 1
@@ -133,6 +140,7 @@ module.exports = (func) ->
     AWSTemplateFormatVersion: '2010-09-09'
   template.Description = context._description if context._description?
   template.Parameters  = context._parameters
+  template.Mappings    = context._mappings    if context._mappings?
   template.Resources   = context._resources
   template.Outputs     = context._outputs
   template

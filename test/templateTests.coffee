@@ -16,7 +16,7 @@ coffeecloud = require '../lib/coffeecloud'
     assert.deepEqual actual, expected
   assert.deepEqual expectedList, actualList
 
-suite = vows.describe 'WordPress Template Test Suite'
+suite = vows.describe 'Template Test Suite'
 suite.addBatch
   'when parsing WordPressTemplate.coffee':
     topic: ->
@@ -36,6 +36,9 @@ suite.addBatch
     'Parameters are the same': (originalTemplate, generatedTemplate) =>
       return if originalTemplate is null or generatedTemplate is null
       @assertListsEqual generatedTemplate.Parameters, originalTemplate.Parameters
+    'Mappings are the same': (originalTemplate, generatedTemplate) =>
+      return if originalTemplate is null or generatedTemplate is null
+      @assertListsEqual generatedTemplate.Mappings, originalTemplate.Mappings
     'Resources are the same': (originalTemplate, generatedTemplate) =>
       return if originalTemplate is null or generatedTemplate is null
       @assertListsEqual generatedTemplate.Resources, originalTemplate.Resources
@@ -69,5 +72,17 @@ suite.addBatch
       assert.ok topic.Resources?
     'there is a Outputs block': (topic) ->
       assert.ok topic.Outputs?
+  'when using mappings':
+    topic: ->
+      coffeecloud ->
+        @Mapping 'AWSRegionArch2AMI'
+          'us-east-1':
+            32: "ami-f417e49d"
+            64: "ami-f617e49f"
+    'mappings block exists': (topic) ->
+      assert.ok topic.Mappings?
+    'values exist': (topic) ->
+      assert.equal 'ami-f417e49d', topic.Mappings.AWSRegionArch2AMI['us-east-1']['32']
+      assert.equal 'ami-f617e49f', topic.Mappings.AWSRegionArch2AMI['us-east-1']['64']
 
 suite.run()

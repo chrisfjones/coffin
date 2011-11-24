@@ -55,6 +55,51 @@ WordPress is web software you can use to create a beautiful website or blog. Thi
     MinValue: '1'
     MaxValue: maxPort
 
+  @Mapping 'AWSInstanceType2Arch',
+    't1.micro'   :
+      Arch: '64'
+    'm1.small'   :
+      Arch: '32'
+    'm1.large'   :
+      Arch: '64'
+    'm1.xlarge'  :
+      Arch: '64'
+    'm2.xlarge'  :
+      Arch: '64'
+    'm2.2xlarge' :
+      Arch: '64'
+    'm2.4xlarge' :
+      Arch: '64'
+    'c1.medium'  :
+      Arch: '32'
+    'c1.xlarge'  :
+      Arch: '64'
+    'cc1.4xlarge':
+      Arch: '64'
+  @Mapping 'AWSRegionArch2AMI',
+    'us-east-1':
+      32: 'ami-f417e49d'
+      64: 'ami-f617e49f'
+    'us-west-1':
+      32: 'ami-bdc797f8'
+      64: 'ami-bfc797fa'
+    'eu-west-1':
+      32: 'ami-a1c2f6d5'
+      64: 'ami-a3c2f6d7'
+    'ap-southeast-1':
+      32: 'ami-2cf28c7e'
+      64: 'ami-2ef28c7c'
+    'ap-northeast-1':
+      32: 'ami-cc03a8cd'
+      64: 'ami-d203a8d3'
+  rdsMultiAz = RDSMultiAZ: 'true'
+  @Mapping 'AWSRegionCapabilities',
+    'us-east-1' : rdsMultiAz
+    'us-west-1' : rdsMultiAz
+    'eu-west-1' : rdsMultiAz
+    'ap-southeast-1' : rdsMultiAz
+    'ap-northeast-1' : rdsMultiAz
+
   #resources
   @AWS.SNS.Topic 'AlarmTopic',
     Subscription: [
