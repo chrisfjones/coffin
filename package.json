@@ -18,7 +18,8 @@
      "test": "(cd test; coffee templateTests.coffee)"
    },
   "dependencies": {
-    "coffee-script":  "1.1.x"
+    "coffee-script":  "1.1.x",
+    "commander":      "0.4.x"
   },
   "devDependencies": {
     "vows": "0.5.x"

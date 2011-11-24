@@ -1,0 +1,7 @@
+@Description 'super simple coffeecloud template'
+@Param.String 'key'
+@AWS.EC2.Instance 'myBox'
+  ImageId: '13983h3oh'
+  KeyName: @Params.key
+@Output 'myBoxDns',
+  @GetAtt 'myBox', 'PublicDnsName'

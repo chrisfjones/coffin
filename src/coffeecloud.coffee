@@ -14,6 +14,7 @@ class CloudFormationTemplateContext
       CloudWatch:
         Alarm: null
       EC2:
+        Instance: null
         SecurityGroup: null
       ElasticLoadBalancing:
         LoadBalancer: null
