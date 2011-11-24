@@ -11,18 +11,49 @@ class CloudFormationTemplateContext
         AutoScalingGroup: null
         LaunchConfiguration: null
         ScalingPolicy: null
+        Trigger: null
+      CloudFormation:
+        Stack: null
+        WaitCondition: null
+        WaitConditionHandle: null
+      CloudFront:
+        Distribution: null
       CloudWatch:
         Alarm: null
       EC2:
+        EIP: null
+        EIPAssociation: null
         Instance: null
         SecurityGroup: null
+        SecurityGroupIngress: null
+        Volume: null
+        VolumeAttachment: null
+      ElasticBeanstalk:
+        Application: null
+        Environment: null
       ElasticLoadBalancing:
         LoadBalancer: null
+      IAM:
+        AccessKey: null
+        Group: null
+        Policy: null
+        User: null
+        UserToGroupAddition: null
+      RDS:
+        DBInstance: null
+        DBSecurityGroup: null
+      Route53:
+        RecordSet: null
+        RecordSetGroup: null
+      S3:
+        Bucket: null
+        BucketPolicy: null
       SNS:
         Topic: null
-      RDS:
-        DBSecurityGroup: null
-        DBInstance: null
+        TopicPolicy: null
+      SQS:
+        Queue: null
+        QueuePolicy: null
     @Param =
       String: (name, arg1, arg2) =>             @_paramByType 'String', name, arg1, arg2
       Number: (name, arg1, arg2) =>             @_paramByType 'Number', name, arg1, arg2
