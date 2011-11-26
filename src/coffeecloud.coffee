@@ -124,7 +124,10 @@ class CloudFormationTemplateContext
 
   #utility functions
   Join: (delimiter, args...) ->
-    'Fn::Join': [ delimiter, args ]
+    if args.length is 1 and (args[0] instanceof Array)
+      'Fn::Join': [ delimiter, args[0] ]
+    else
+      'Fn::Join': [ delimiter, args ]
   FindInMap: (args...) ->
     'Fn::FindInMap': args
   GetAtt: (args...) ->

@@ -96,4 +96,19 @@ suite.addBatch
       assert.equal 'someInstance', topic.Resources.instance.Properties.Tags[0].Value
       assert.equal 'Environment', topic.Resources.instance.Properties.Tags[1].Key
       assert.equal 'someEnvironment', topic.Resources.instance.Properties.Tags[1].Value
+  'when using the join function':
+    topic: ->
+      myArray = ['x', 'y', 'z']
+      coffeecloud ->
+        @AWS.EC2.Instance 'a',
+          UserData: @Join '', 'x', 'y', 'z'
+        @AWS.EC2.Instance 'b',
+          UserData: @Join '', myArray
+    'it works with varargs': (topic) ->
+      assert.equal topic.Resources.a.Properties.UserData['Fn::Join'][0], ''
+      assert.deepEqual topic.Resources.a.Properties.UserData['Fn::Join'][1], ['x', 'y', 'z']
+    'it works with an array arg': (topic) ->
+      assert.equal topic.Resources.b.Properties.UserData['Fn::Join'][0], ''
+      assert.deepEqual topic.Resources.b.Properties.UserData['Fn::Join'][1], ['x', 'y', 'z']
+
 suite.run()
