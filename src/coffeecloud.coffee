@@ -117,6 +117,10 @@ class CloudFormationTemplateContext
 
   Description: (d) => @_description = d
 
+  Tag: (key, val) ->
+    Key: key
+    Value: val
+
   #utility functions
   Join: (delimiter, args...) ->
     'Fn::Join': [ delimiter, args ]

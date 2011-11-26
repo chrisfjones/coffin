@@ -84,5 +84,14 @@ suite.addBatch
     'values exist': (topic) ->
       assert.equal 'ami-f417e49d', topic.Mappings.AWSRegionArch2AMI['us-east-1']['32']
       assert.equal 'ami-f617e49f', topic.Mappings.AWSRegionArch2AMI['us-east-1']['64']
-
+  'when using tags':
+    topic: ->
+      coffeecloud ->
+        @AWS.EC2.Instance 'instance',
+          Tags: [ @Tag('Name', 'someInstance'), @Tag('Environment', 'someEnvironment') ]
+    'tags are correct': (topic) ->
+      assert.equal 'Name', topic.Resources.instance.Properties.Tags[0].Key
+      assert.equal 'someInstance', topic.Resources.instance.Properties.Tags[0].Value
+      assert.equal 'Environment', topic.Resources.instance.Properties.Tags[1].Key
+      assert.equal 'someEnvironment', topic.Resources.instance.Properties.Tags[1].Value
 suite.run()
