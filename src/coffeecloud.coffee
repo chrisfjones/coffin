@@ -2,7 +2,7 @@ class CloudFormationTemplateContext
   constructor: ->
     @_resources   = {}
     @_parameters  = {}
-    @_mappings    = {}
+    @_mappings    = null
     @_outputs     = {}
     @_description = null
     @Params       = {}
@@ -100,6 +100,7 @@ class CloudFormationTemplateContext
       target[key] = val
 
   Mapping: (name, map) =>
+    @_mappings ?= {}
     result = {}
     result[name] = map
     @_set result, @_mappings

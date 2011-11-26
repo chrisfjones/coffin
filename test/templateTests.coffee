@@ -66,6 +66,8 @@ suite.addBatch
       assert.ok topic?
     'there is no description': (topic) ->
       assert.ok Object.keys(topic).indexOf('Description') is -1
+    'there is no mappings block': (topic) ->
+      assert.ok Object.keys(topic).indexOf('Mappings') is -1
     'there is a Parameters block': (topic) ->
       assert.ok topic.Parameters?
     'there is a Resources block': (topic) ->
