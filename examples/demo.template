@@ -32,7 +32,7 @@
     "root": {
       "Type": "AWS::IAM::User",
       "Properties": {
-        "something": "blah"
+        "Path": "/"
       }
     },
     "securityGroup": {

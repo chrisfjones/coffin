@@ -22,7 +22,7 @@
 # resources are of the form:
 # @<resource type with dots> <name>, [properties]
 @AWS.IAM.User 'root',
-  something: 'blah'
+  Path: '/'
 
 # you're free to use arbitrary coffee-script to simplify things
 openPort = (port) ->

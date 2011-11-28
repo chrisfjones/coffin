@@ -36,6 +36,6 @@ writeJsonTemplate = (source, json, base) ->
     json = ' ' if json.length <= 0
     fs.writeFile templatePath, json, (err) ->
       console.err err.message if err
-      console.log "coffinized #{templatePath}"
+      console.log "\u26B0 #{templatePath}"
   path.exists base, (exists) ->
     if exists then write() else exec "mkdir -p #{base}", write
