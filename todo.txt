@@ -8,3 +8,4 @@
   - @GetAtt 'MyResource', 'MyProperty' 
     becomes
     @Resource.MyResource.MyProperty
+- prettier @Join handling for multiple lines (for UserData scripts and such)

@@ -1,0 +1,130 @@
+@Description 'Simplified Rails instance with an RDS.'
+
+@Param.String 'KeyName',            'Name of an existing EC2 KeyPair to enable SSH access to the instances'
+@Param.String 'DBName',             'MySQL database name', Default: 'MyDatabase'
+@Param.String 'DBUsername',         'Username for MySQL database access', NoEcho: 'true'
+@Param.String 'DBPassword',         'Password for MySQL database access', NoEcho: 'true'
+@Param.Number 'DBAllocatedStorage', 'The size of the database (Gb)', Default: '5'
+@Param.String 'DBInstanceClass',    'The database instance type', Default: 'db.m1.small'
+@Param.String 'InstanceType',       'WebServer EC2 instance type', Default: 'm1.small'
+
+@Mapping 'AWSInstanceType2Arch',
+  't1.micro'    : { 'Arch' : '32' },
+  'm1.small'    : { 'Arch' : '32' },
+  'm1.large'    : { 'Arch' : '64' },
+  'm1.xlarge'   : { 'Arch' : '64' },
+  'm2.xlarge'   : { 'Arch' : '64' },
+  'm2.2xlarge'  : { 'Arch' : '64' },
+  'm2.4xlarge'  : { 'Arch' : '64' },
+  'c1.medium'   : { 'Arch' : '32' },
+  'c1.xlarge'   : { 'Arch' : '64' },
+  'cc1.4xlarge' : { 'Arch' : '64' }
+
+@Mapping 'AWSRegionArch2AMI',
+  'us-east-1'      : { '32' : 'ami-7f418316', '64' : 'ami-7341831a' },
+  'us-west-1'      : { '32' : 'ami-951945d0', '64' : 'ami-971945d2' },
+  'us-west-2'      : { '32' : 'ami-16fd7026', '64' : 'ami-10fd7020' },
+  'eu-west-1'      : { '32' : 'ami-24506250', '64' : 'ami-20506254' },
+  'ap-southeast-1' : { '32' : 'ami-74dda626', '64' : 'ami-7edda62c' },
+  'ap-northeast-1' : { '32' : 'ami-dcfa4edd', '64' : 'ami-e8fa4ee9' }
+
+@AWS.IAM.User 'CfnUser',
+  Path: '/'
+  Policies: [
+    PolicyName: 'root'
+    PolicyDocument:
+      Statement: [
+        Effect:'Allow'
+        Action:'cloudformation:DescribeStackResource'
+        Resource:'*'
+      ]
+    ]
+@AWS.IAM.AccessKey 'HostKeys',
+  UserName: @Resources.CfnUser
+
+openPort = (port) ->
+  IpProtocol: 'tcp'
+  FromPort:   port
+  ToPort:     port
+  CidrIp:     '0.0.0.0/0'
+@AWS.EC2.SecurityGroup 'WebServerSecurityGroup',
+  GroupDescription: 'Enable HTTP access via port 3000 plus SSH access'
+  SecurityGroupIngress: [
+    openPort '3000',
+    openPort '22'
+  ]
+@AWS.RDS.DBSecurityGroup 'DBSecurityGroup',
+  GroupDescription: 'Grant database access to web server'
+  DBSecurityGroupIngress:
+    EC2SecurityGroupName: @Resources.WebServerSecurityGroup
+
+@AWS.EC2.Instance 'WebServer',
+  Metadata:
+    Comment1: 'Configure the bootstrap helpers to install the Rails'
+    Comment2: 'The application is downloaded from the CloudFormationRailsSample.zip file'
+    'AWS::CloudFormation::Init':
+      config:
+        packages:
+          yum:
+            'gcc-c++'      : []
+            'make'         : []
+            'ruby-devel'   : []
+            'rubygems'     : []
+            'mysql'        : []
+            'mysql-devel'  : []
+            'mysql-libs'   : []
+
+          rubygems:
+            'execjs'       : []
+            'therubyracer' : []
+            'rails'        : []
+        sources: '/home/ec2-user/sample' : 'https://s3.amazonaws.com/cloudformation-examples/CloudFormationRailsSample.zip'
+  ###
+        files:
+          '/home/ec2-user/sample/config/database.yml':
+            content: @Join '', [
+              '''development:
+                adapter: mysql2
+                encoding: utf8
+                reconnect: false
+                pool: 5
+                database: ''', @Params.DBName, "\n",
+                "username: ", @Params.DBUsername, "\n",
+                "password: ", @Params.DBPassword, "\n",
+                "host: ", @GetAtt('MySQLDatabase', 'Endpoint.Address'), "\n",
+                "port: ", @GetAtt('MySQLDatabase', 'Endpoint.Port'), "\n"
+            ]
+            mode: '000644'
+            owner: 'root'
+            group: 'root'
+    ImageId: @FindInMap('AWSRegionArch2AMI', Ref: @Region, @FindInMap('AWSInstanceType2Arch', @Params.InstanceType, 'Arch'))
+  Properties:
+    InstanceType: @Params.InstanceType
+    SecurityGroups: [ @Resources.WebServerSecurityGroup ]
+    KeyName: @Params.KeyName
+    UserData: @Base64 @Join '', '''#!/bin/bash -v
+      yum update -y aws-cfn-bootstrap
+      # Helper function
+      function error_exit
+      {
+        /opt/aws/bin/cfn-signal -e 1 -r \"$1\" '", @Resources.WaitHandle, "'
+        exit 1
+      }
+      # Install Rails packages
+      /opt/aws/bin/cfn-init -s ", Ref: @StackName, " -r WebServer --access-key ",  @Params.HostKeys,
+      "--secret-key ''', @GetAtt('HostKeys', 'SecretAccessKey'), " --region ", Ref: @Region, " || error_exit 'Failed to run cfn-init'
+
+      # Install anu other Gems, create the database and run a migration
+      cd /home/ec2-user/sample
+      bundle install  || error_exit 'Failed to install bundle'
+      rake db:migrate || error_exit 'Failed to execute database migration'
+
+      # Startup the rails server
+      rails server -d
+      echo \"cd /home/ec2-user/sample\" >> /etc/rc.local
+      echo \"rails server -d\" >> /etc/rc.local
+
+      # All is well so signal success
+      /opt/aws/bin/cfn-signal -e 0 -r \"Rails application setup complete\" '", @Resources.WaitHandle, "'\n"
+
+  ###

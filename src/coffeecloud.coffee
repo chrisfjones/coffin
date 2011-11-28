@@ -89,9 +89,13 @@ class CloudFormationTemplateContext
 
   _resourceByType: (type, name, props) =>
     result = {}
-    result[name] =
-      Type: type
-      Properties: props
+    if props?.Metadata? or props?.Properties?
+      result[name] = props
+      result.Type = type
+    else
+      result[name] =
+        Type: type
+        Properties: props
     @_set result, @_resources
     @DeclareResource name
 

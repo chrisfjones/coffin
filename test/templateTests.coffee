@@ -110,5 +110,19 @@ suite.addBatch
     'it works with an array arg': (topic) ->
       assert.equal topic.Resources.b.Properties.UserData['Fn::Join'][0], ''
       assert.deepEqual topic.Resources.b.Properties.UserData['Fn::Join'][1], ['x', 'y', 'z']
+  'when using metadata and top level properties':
+    topic: ->
+      coffeecloud ->
+        @AWS.EC2.Instance 'a',
+          Metadata:
+            meta: 'data'
+          Properties:
+            a: 'b'
+    'metadata block is correct': (topic) ->
+      assert.ok topic.Resources.a.Metadata?
+      assert.equal topic.Resources.a.Metadata.meta, 'data'
+    'properties block is correct': (topic) ->
+      assert.ok topic.Resources.a.Properties?
+      assert.equal topic.Resources.a.Properties.a, 'b'
 
 suite.run()
