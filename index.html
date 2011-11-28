@@ -16,13 +16,15 @@
     window.onload = function() {
       before = ace.edit("before");
       before.setReadOnly(true);
+      before.setTheme("ace/theme/idle_fingers");
       before.getSession().setMode(new CoffeeMode());
-    $.get('demo.coffin', function(data) {
+     $.get('demo.coffin', function(data) {
         before.getSession().setValue(data);
       });
 
       var after = ace.edit("after");
       after.setReadOnly(true);
+      after.setTheme("ace/theme/idle_fingers");
       after.getSession().setMode(new JsonMode());
      $.get('demo.template', function(data) {
         after.getSession().setValue(data);
@@ -37,28 +39,22 @@
     }
     #container {
       margin: 0 auto;
-      width: 85%;
+      width: 90%;
     }
     .description {
-      align: center;
-      font-size: 1.2em;
+     font-size: 1.2em;
       width: 100%;
       margin: auto 30px 30px;
     }
     pre { background: #000; color: #fff; padding: 15px;}
 
     #before {
-      position: relative;
-      width: 50%;
-      height: 400px;
       float: left;
     }
     #after {
-      position: relative;
-      width: 48%;
-      height: 400px;
       float: right;
     }
+
     #icon {
       position: absolute;
       top: 20px;
@@ -66,9 +62,12 @@
       opacity: 0.1;
     }
     .editor {
-      background-color: black;
-      color: white;
-    }
+      position: relative;
+      width: 49%;
+      height: 600px;
+   }
+   #install {
+   }
   </style>
 </head>
 
@@ -79,7 +78,7 @@
 
   <div id="container">
     <div class="description">
-      coffee-script dsl for aws cloudformation templates <a href="https://github.com/chrisfjones/coffin">More...</a>
+      coffee-script dsl for aws cloudformation templates
     </div>
 
    <div class="editor" id="before">
@@ -87,10 +86,10 @@
     <div class="editor" id="after">
     </div>
 
-   <p>
+   <div id="install">
     Get it like this:
       <pre>$ npm install coffin</pre>
-    </p>
+    </div>
   </div>
 
 </body>
