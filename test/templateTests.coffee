@@ -2,7 +2,7 @@ vows        = require 'vows'
 assert      = require 'assert'
 fs          = require 'fs'
 path        = require 'path'
-coffeecloud = require '../lib/coffeecloud'
+coffin = require '../lib/coffin'
 
 @assertListsEqual = (actualList, expectedList) ->
   assert.equal actualList.length, expectedList.length
@@ -47,7 +47,7 @@ suite.addBatch
       @assertListsEqual generatedTemplate.Outputs, originalTemplate.Outputs
   'when using resource types':
     topic: ->
-      coffeecloud ->
+      coffin ->
         @AWS.AutoScaling.ScalingPolicy 'scalePolicy'
         @Param.String 'shortParam'
     'it does not break': (topic) ->
@@ -61,7 +61,7 @@ suite.addBatch
       assert.ok topic.Parameters.shortParam?
   'when using a blank template':
     topic: ->
-      coffeecloud ->
+      coffin ->
     'it is not null': (topic) ->
       assert.ok topic?
     'there is no description': (topic) ->
@@ -76,7 +76,7 @@ suite.addBatch
       assert.ok topic.Outputs?
   'when using mappings':
     topic: ->
-      coffeecloud ->
+      coffin ->
         @Mapping 'AWSRegionArch2AMI'
           'us-east-1':
             32: "ami-f417e49d"
@@ -88,7 +88,7 @@ suite.addBatch
       assert.equal 'ami-f617e49f', topic.Mappings.AWSRegionArch2AMI['us-east-1']['64']
   'when using tags':
     topic: ->
-      coffeecloud ->
+      coffin ->
         @AWS.EC2.Instance 'instance',
           Tags: [ @Tag('Name', 'someInstance'), @Tag('Environment', 'someEnvironment') ]
     'tags are correct': (topic) ->
@@ -99,7 +99,7 @@ suite.addBatch
   'when using the join function':
     topic: ->
       myArray = ['x', 'y', 'z']
-      coffeecloud ->
+      coffin ->
         @AWS.EC2.Instance 'a',
           UserData: @Join '', 'x', 'y', 'z'
         @AWS.EC2.Instance 'b',
@@ -112,7 +112,7 @@ suite.addBatch
       assert.deepEqual topic.Resources.b.Properties.UserData['Fn::Join'][1], ['x', 'y', 'z']
   'when using metadata and top level properties':
     topic: ->
-      coffeecloud ->
+      coffin ->
         @AWS.EC2.Instance 'a',
           Metadata:
             meta: 'data'
