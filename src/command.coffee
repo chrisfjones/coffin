@@ -5,14 +5,14 @@ CoffeeScript = require 'coffee-script'
 {spawn, exec}  = require 'child_process'
 
 commander.version '0.0.1'
-commander.usage '[options] <coffeecloud template>'
+commander.usage '[options] <coffin template>'
 commander.option '-o, --output [dir]', 'Directory to output compiled file(s) to'
 commander.option '--pretty', 'Add spaces and stuff to the resulting json to make it a little prettier'
 commander.option '-p --print', 'Print the compiled template'
 commander.parse process.argv
 
 exports = module.exports.run = ->
-  pre = "require('./coffeecloud') ->\n"
+  pre = "require('./coffin') ->\n"
   for source in commander.args
     fs.readFile source, (err, code) ->
       throw err if err

@@ -1,7 +1,7 @@
 {
-  "name":         "coffeecloud",
+  "name":         "coffin",
   "description":  "Coffee dsl for aws cloudformation",
-  "keywords":     ["coffeescript", "aws", "cloudformation"],
+  "keywords":     ["coffeescript", "coffee-script", "aws", "cloudformation"],
   "author":       "Chris Jones",
   "version":      "0.0.1",
   "engines":      {
@@ -10,9 +10,9 @@
   "directories" : {
     "lib" : "./lib"
   },
-  "main" : "./lib/coffeecloud",
+  "main" : "./lib/coffin",
   "bin":          {
-    "coffeecloud":     "./bin/coffeecloud"
+    "coffin":     "./bin/coffin"
   },
   "scripts": {
      "test": "(cd test; coffee templateTests.coffee)"

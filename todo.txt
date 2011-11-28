@@ -9,3 +9,4 @@
     becomes
     @Resource.MyResource.MyProperty
 - prettier @Join handling for multiple lines (for UserData scripts and such)
+- watch support for coffin command line

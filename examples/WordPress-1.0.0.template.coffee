@@ -1,5 +1,5 @@
 # from https://s3.amazonaws.com/cloudformation-templates-us-east-1/WordPress-1.0.0.template
-result = require('../lib/coffeecloud') ->
+result = require('../lib/coffin') ->
   @Description '''
 WordPress is web software you can use to create a beautiful website or blog. This template creates a scalable WordPress installation using an Auto Scaling group behind an Elastic Load Balancer along with an Amazon Relational Database Service database instance to store the content. **WARNING** This template creates one or more Amazon EC2 instances and an Amazon Relational Database Service database instance. You will be billed for the AWS resources used if you create a stack from this template.
 '''
