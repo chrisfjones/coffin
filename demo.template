@@ -1,0 +1,17 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Parameters": {
+    "name": {
+      "Type": "String"
+    }
+  },
+  "Resources": {
+    "myServer": {
+      "Type": "AWS::EC2::Instance",
+      "Properties": {
+        "ImageId": "aws-ajfdl31"
+      }
+    }
+  },
+  "Outputs": {}
+}

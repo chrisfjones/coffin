@@ -1,0 +1,4 @@
+@Param.String 'name'
+
+@AWS.EC2.Instance 'myServer',
+  ImageId: 'aws-ajfdl31'
