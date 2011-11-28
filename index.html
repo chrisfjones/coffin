@@ -17,25 +17,17 @@
       before = ace.edit("before");
       before.setReadOnly(true);
       before.getSession().setMode(new CoffeeMode());
-      before.getSession().setValue("some text");
-
-/*
-      $.get('demo.coffin', function(data) {
+    $.get('demo.coffin', function(data) {
         before.getSession().setValue(data);
       });
-*/
 
       var after = ace.edit("after");
       after.setReadOnly(true);
       after.getSession().setMode(new JsonMode());
-      after.getSession().setValue("some text");
-
-/*
-      $.get('demo.template', function(data) {
+     $.get('demo.template', function(data) {
         after.getSession().setValue(data);
       });
-*/
-    };
+   };
   </script>
 
   <style type="text/css">
