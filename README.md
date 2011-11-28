@@ -1,1 +1,1 @@
- [![Build Status](https://secure.travis-ci.org/chrisfjones/coffeecloud.png)](http://travis-ci.org/chrisfjones/coffeecloud)
+ [![Build Status](https://secure.travis-ci.org/chrisfjones/coffin.png)](http://travis-ci.org/chrisfjones/coffin)
