@@ -4,6 +4,16 @@
   "keywords":     ["coffeescript", "coffee-script", "aws", "cloudformation"],
   "author":       "Chris Jones",
   "version":      "0.0.1",
+  "homepage":     "http://chrisfjones.github.com/coffin",
+  "repositories": [
+       {
+            "type": "git", 
+            "url": "git@github.com:chrisfjones/coffin.git"
+       }
+  ],
+  "bugs": {
+       "url": "http://github.com/chrisfjones/coffin/issues" 
+  },
   "engines":      {
     "node":       ">=0.4.0"
   },
