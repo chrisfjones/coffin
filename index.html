@@ -8,7 +8,7 @@
   <script src="js/ace-0.2.0.js"></script>
   <script src="js/mode-coffee.js"></script>
   <script src="js/mode-json.js"></script>
-  <script src="js/theme-dawn.js"></script>
+  <script src="js/theme-kr_theme.js"></script>
   <script>
     var CoffeeMode = require("ace/mode/coffee").Mode;
     var JsonMode = require("ace/mode/json").Mode;
@@ -17,16 +17,24 @@
       before = ace.edit("before");
       before.setReadOnly(true);
       before.getSession().setMode(new CoffeeMode());
+      before.getSession().setValue("some text");
+
+/*
       $.get('demo.coffin', function(data) {
         before.getSession().setValue(data);
       });
+*/
 
       var after = ace.edit("after");
       after.setReadOnly(true);
       after.getSession().setMode(new JsonMode());
+      after.getSession().setValue("some text");
+
+/*
       $.get('demo.template', function(data) {
         after.getSession().setValue(data);
       });
+*/
     };
   </script>
 
@@ -39,7 +47,12 @@
       margin: 0 auto;
       width: 80%;
     }
-    .description { font-size: 1.2em; margin-bottom: 30px; margin-top: 30px; font-style: italic;}
+    .description {
+      align: center;
+      font-size: 1.2em;
+      width: 100%;
+      margin: auto 30px 30px;
+    }
     pre { background: #000; color: #fff; padding: 15px;}
     hr { border: 0; width: 80%; border-bottom: 1px solid #aaa}
 
@@ -51,7 +64,7 @@
     }
     #after {
       position: relative;
-      width: 50%;
+      width: 48%;
       height: 400px;
       float: right;
     }
@@ -60,6 +73,10 @@
       top: 20px;
       left: 20px;
       opacity: 0.1;
+    }
+    .editor {
+      background-color: black;
+      color: white;
     }
   </style>
 </head>
@@ -74,13 +91,12 @@
       coffee-script dsl for aws cloudformation templates <a href="https://github.com/chrisfjones/coffin">More...</a>
     </div>
 
-    <div id="before">
+   <div class="editor" id="before">
     </div>
-    <div id="after">
+    <div class="editor" id="after">
     </div>
 
-    <hr>
-    <p>
+   <p>
     Get it like this:
       <pre>$ npm install coffin</pre>
     </p>
