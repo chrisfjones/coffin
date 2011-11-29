@@ -74,7 +74,7 @@ printCommand.action (template) ->
     console.log compiled
 
 validateCommand = commander.command 'validate [template]'
-validateCommand.description 'Validate the compiled template. Either an AWS_CLOUDFORMATION_HOME environment variable or a --cfnHome switch is required.'
+validateCommand.description 'Validate the compiled template. Either an AWS_CLOUDFORMATION_HOME environment variable or a --cfn-home switch is required.'
 validateCommand.action (template) ->
   validateArgs()
   compileTemplate template, (compiled) ->
