@@ -1,4 +1,4 @@
-compiledJsonTemplateString = require('coffin') ->
+compiledJsonTemplateAsAnObject = require('coffin') ->
   @Description 'embedded coffin'
   @Param.String 'name'
   @AWS.EC2.Instance
