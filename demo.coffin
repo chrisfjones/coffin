@@ -1,7 +1,6 @@
 @Description 'A coffinized AWS cloudformation template'
 
-# params are of the form:
-# @Param.<type> <name>, [description], [properties]
+# params: @Param.<type> <name>, [description], [properties]
 @Param.String 'name', 'This description is optional',
   AllowedPattern: '[a-zA-Z][-a-zA-Z0-9]*'
   Default:        'coffinized'
@@ -9,8 +8,7 @@
 @Param.String 'size',
   Default: 'micro'
 
-# mappings are of the form:
-# @Mapping <name>, <map>
+# mappings: @Mapping <name>, <map>
 @Mapping 'instanceMap',
   micro:
     type: 't1.micro'
@@ -19,8 +17,7 @@
     type: 'm1.small'
     ami:  'ami-f170b198'
 
-# resources are of the form:
-# @<resource type with dots> <name>, [properties]
+# resources: @<resource type with dots> <name>, [properties]
 @AWS.IAM.User 'root',
   Path: '/'
 
@@ -33,19 +30,18 @@ openPort = (port) ->
 @AWS.EC2.SecurityGroup 'securityGroup',
   SecurityGroupIngress: [
     openPort('22'),
-    #params are referenced like:  @Param.<name>
+    #referencing params:  @Param.<name>
     openPort(@Params.port)
   ]
 
 @AWS.EC2.Instance 'webserver',
-  #map elements: @FindInMap <map name>, <key1>, <key2>
+  #referencing maps: @FindInMap <map name>, <key1>, <key2>
   ImageId:      @FindInMap 'instanceMap', @Params.size, 'ami'
   InstanceType: @FindInMap 'instanceMap', @Params.size, 'type'
-  #resources are referenced like: @Resources.<name>
+  #referencing resources: @Resources.<name>
   SecurityGroups: [ @Resources.securityGroup ]
 
-#Outputs are of the form:
-# @Output <name>, [description], <value>
+#Outputs: @Output <name>, [description], <value>
 @Output 'url',
   @Join '', 'http://', @GetAtt('webserver', 'PublicDnsName')
 @Output 'id', 'This description is optional', @Resources.webserver
