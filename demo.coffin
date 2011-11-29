@@ -1,4 +1,4 @@
-@Description 'An coffinized AWS cloudformation template'
+@Description 'A coffinized AWS cloudformation template'
 
 # params are of the form:
 # @Param.<type> <name>, [description], [properties]
@@ -38,7 +38,7 @@ openPort = (port) ->
   ]
 
 @AWS.EC2.Instance 'webserver',
-  #map elements are referenced like: @FindInMap <map name>, <key1>, <key2>
+  #map elements: @FindInMap <map name>, <key1>, <key2>
   ImageId:      @FindInMap 'instanceMap', @Params.size, 'ami'
   InstanceType: @FindInMap 'instanceMap', @Params.size, 'type'
   #resources are referenced like: @Resources.<name>

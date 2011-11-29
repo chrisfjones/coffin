@@ -29,6 +29,14 @@
      $.get('demo.template', function(data) {
         after.getSession().setValue(data);
       });
+
+      var embed = ace.edit("embed");
+      embed.setReadOnly(true);
+      embed.setTheme("ace/theme/idle_fingers");
+      embed.getSession().setMode(new CoffeeMode());
+     $.get('demo.coffee', function(data) {
+        embed.getSession().setValue(data);
+      });
    };
   </script>
 
@@ -57,8 +65,8 @@
 
     #icon {
       position: absolute;
-      top: 20px;
-      left: 20px;
+      top: 12px;
+      left: 12px;
       opacity: 0.1;
     }
     .editor {
@@ -67,6 +75,7 @@
       height: 600px;
    }
    #install {
+     margin-top: 10px;
    }
   </style>
 </head>
@@ -81,14 +90,48 @@
       coffee-script dsl for aws cloudformation templates
     </div>
 
-   <div class="editor" id="before">
-    </div>
-    <div class="editor" id="after">
-    </div>
-
+    <table>
+      <tr>
+        <td>
+          <div class="editor" id="before"></div>
+        </td>
+        <td>
+          <div class="editor" id="after"></div>
+        </td>
+      </tr>
+    </table>
+    
    <div id="install">
-    Get it like this:
-      <pre>$ npm install coffin</pre>
+    To use it, you'll need <a href="http://nodejs.org">node.js</a> and <a href="http://npmjs.org">npm</a>. Then...
+      <pre>&#x26b0; npm install -g coffin
+&#x26b0; coffin --help
+
+  Usage: coffin [options] [command] <coffin template>
+
+  Commands:
+
+    print [template]
+    Print the compiled template.
+   
+    validate [template]
+    Validate the compiled template. Either an AWS_CLOUDFORMATION_HOME environment variable or a --cloudFormationHome switch is required.
+   
+    stack [name] [template]
+    Create or update the named stack using the compiled template.
+   
+    compile [template]
+    Compile and write the template. The output file will have the same name as the coffin template plus a shiny new ".template" extension.
+
+  Options:
+
+    -h, --help          output usage information
+    -V, --version       output the version number
+    -o, --output [dir]  Directory to output compiled file(s) to
+    -p, --pretty        Add spaces and stuff to the resulting json to make it a little prettier
+    --cfn-home [dir]    The home of your AWS Cloudformation tools. Defaults to your AWS_CLOUDFORMATION_HOME environment variable.
+      </pre>
+     ...or...
+     <div id="embed" class="editor"></div>
     </div>
   </div>
 
