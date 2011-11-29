@@ -13,31 +13,25 @@
     var CoffeeMode = require("ace/mode/coffee").Mode;
     var JsonMode = require("ace/mode/json").Mode;
 
+    setupEditor = function(id, mode, source) {
+      ed = ace.edit(id);
+      ed.setReadOnly(true);
+      ed.setTheme("ace/theme/idle_fingers");
+      ed.getSession().setMode(mode);
+      ed.getSession().setValue("fdslkajfslkjdsflkdsjf");
+      /*
+      $.get(source, function(data) {
+        ed.getSession().setValue(data);
+      });
+      */
+    };
+
     window.onload = function() {
-      before = ace.edit("before");
-      before.setReadOnly(true);
-      before.setTheme("ace/theme/idle_fingers");
-      before.getSession().setMode(new CoffeeMode());
-     $.get('demo.coffin', function(data) {
-        before.getSession().setValue(data);
-      });
-
-      var after = ace.edit("after");
-      after.setReadOnly(true);
-      after.setTheme("ace/theme/idle_fingers");
-      after.getSession().setMode(new JsonMode());
-     $.get('demo.template', function(data) {
-        after.getSession().setValue(data);
-      });
-
-      var embed = ace.edit("embed");
-      embed.setReadOnly(true);
-      embed.setTheme("ace/theme/idle_fingers");
-      embed.getSession().setMode(new CoffeeMode());
-     $.get('demo.coffee', function(data) {
-        embed.getSession().setValue(data);
-      });
+      setupEditor("before", new CoffeeMode(), "demo.coffin");
+      setupEditor("after", new JsonMode(), "demo.template");
+      setupEditor("embed", new CoffeeMode(), "demo.coffee");
    };
+
   </script>
 
   <style type="text/css">
@@ -45,24 +39,16 @@
       margin-top: 1.0em;
       font-family: Helvetica, Arial, FreeSans, san-serif;
     }
-    #container {
-      margin: 0 auto;
-      width: 90%;
+    a {
+      color: black;
+      text-decoration: underline;
     }
     #editorTable {
-      width: 100%;
-    }
-    .description {
-      font-size: 1.2em;
-      width: 100%;
-      margin: auto 30px 30px;
+      margin: auto;
+      width: 1100px; 
     }
     pre { background: #000; color: #fff; padding: 15px;}
 
-    #before {
-    }
-    #after {
-    }
     #embed {
       height: 200px;
     }
@@ -71,14 +57,11 @@
       position: absolute;
       top: 12px;
       left: 12px;
-      opacity: 0.1;
+      opacity: 0.09;
     }
     .editor {
       position: relative;
       height: 600px;
-   }
-   #install {
-     margin-top: 10px;
    }
   </style>
 </head>
@@ -87,13 +70,11 @@
   <a href="https://github.com/chrisfjones/coffin"><img style="position: absolute; top: 0; right: 0; border: 0;" src="http://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub" /></a>
 
   <img id="icon" src="big_coffin.png"></img>
-
-  <div id="container">
-    <table id="editorTable">
-      <tr>
-        <td>coffee-script dsl...</td>
-        <td>for aws cloudformation templates</td>
-      </tr>
+    <div style="margin: auto; width: 1100px; margin-top: 42px;height:40px; position: relative;">
+      <div style="position: absolute; left: 40px;">A <a href="http://jashkenas.github.com/coffee-script">coffee-script</a> dsl... </div>
+      <div style="position: absolute; left: 610px;">for <a href="http://aws.amazon.com/cloudformation/">aws cloudformation</a> templates</div>
+    </div>
+    <table id="editorTable" cellpadding="8">
       <tr>
         <td>
           <div class="editor" id="before"></div>
@@ -102,10 +83,13 @@
           <div class="editor" id="after"></div>
         </td>
       </tr>
-    </table>
-    
-   <div id="install">
-    To use it, you'll need <a href="http://nodejs.org">node.js</a> and <a href="http://npmjs.org">npm</a>. Then...
+      <tr>
+        <td colspan="2">
+          To use it, you'll need <a href="http://nodejs.org">node.js</a> and <a href="http://npmjs.org">npm</a>. Then...
+        </td>
+      </tr>
+      <tr>
+        <td colspan="2">
       <pre>&#x26b0; npm install -g coffin
 &#x26b0; coffin --help
 
@@ -133,10 +117,19 @@
     -p, --pretty        Add spaces and stuff to the resulting json to make it a little prettier
     --cfn-home [dir]    The home of your AWS Cloudformation tools. Defaults to your AWS_CLOUDFORMATION_HOME environment variable.
       </pre>
-     ...or...
-     <div id="embed" class="editor"></div>
-    </div>
-  </div>
+        </td>
+      </tr>
+      <tr>
+        <td colspan="2">
+          ...or...
+        </td>
+      </tr>
+      <tr>
+        <td colspan="2">
+          <div id="embed" class="editor"></div>
+        </td>
+      </tr>
+    </table>
 
 </body>
 </html>
