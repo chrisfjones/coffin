@@ -1,4 +1,4 @@
-@Description 'An coffinized AWS cloudformation template'
+@Description 'A coffinized AWS cloudformation template'
 
 # params are of the form:
 # @Param.<type> <name>, [description], [properties]
