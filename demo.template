@@ -1,6 +1,6 @@
 {
   "AWSTemplateFormatVersion": "2010-09-09",
-  "Description": "An coffinized AWS cloudformation template",
+  "Description": "A coffinized AWS cloudformation template",
   "Parameters": {
     "name": {
       "AllowedPattern": "[a-zA-Z][-a-zA-Z0-9]*",
