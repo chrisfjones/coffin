@@ -14,7 +14,7 @@
     var JsonMode = require("ace/mode/json").Mode;
 
     setupEditor = function(id, mode, source) {
-      ed = ace.edit(id);
+      var ed = ace.edit(id);
       ed.setReadOnly(true);
       ed.setTheme("ace/theme/idle_fingers");
       ed.getSession().setMode(mode);
