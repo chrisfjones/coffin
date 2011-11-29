@@ -10,3 +10,8 @@
     @Resource.MyResource.MyProperty
 - prettier @Join handling for multiple lines (for UserData scripts and such)
 - watch support for coffin command line
+- integration with cloudformation command line tools
+  - validate via command line flag 
+  - create/update via command line flag
+- better error reporting
+- fix the weird . path thing

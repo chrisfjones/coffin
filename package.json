@@ -3,7 +3,7 @@
   "description":  "Coffee dsl for aws cloudformation",
   "keywords":     ["coffeescript", "coffee-script", "aws", "cloudformation"],
   "author":       "Chris Jones",
-  "version":      "0.0.1",
+  "version":      "0.0.2",
   "homepage":     "http://chrisfjones.github.com/coffin",
   "repositories": [
        {
