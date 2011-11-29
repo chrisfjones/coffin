@@ -18,9 +18,10 @@
       ed.setReadOnly(true);
       ed.setTheme("ace/theme/idle_fingers");
       ed.getSession().setMode(mode);
-      $.get(source, function(data) {
+      ed.getSession().setValue('.');
+      /*$.get(source, function(data) {
         ed.getSession().setValue(data);
-      });
+      });*/
     };
 
     window.onload = function() {
@@ -42,7 +43,6 @@
     }
     #editorTable {
       margin: auto;
-      width: 1100px; 
     }
     pre { background: #000; color: #fff; padding: 15px;}
 
@@ -98,13 +98,13 @@
     Print the compiled template.
    
     validate [template]
-    Validate the compiled template. Either an AWS_CLOUDFORMATION_HOME environment variable or a --cloudFormationHome switch is required.
+    Validate the compiled template. Either an AWS_CLOUDFORMATION_HOME environment variable or a --cfn-home switch is required.
    
     stack [name] [template]
     Create or update the named stack using the compiled template.
    
     compile [template]
-    Compile and write the template. The output file will have the same name as the coffin template plus a shiny new ".template" extension.
+    Compile and write the template. The output file will have the same name as the coffin template plus a ".template" extension.
 
   Options:
 
