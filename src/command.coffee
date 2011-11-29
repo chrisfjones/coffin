@@ -59,6 +59,29 @@ validateTemplate = (templatePath, callback) =>
       console.log "\u26B0 #{templatePath} is valid"
     callback?()
 
+updateOrCreateStack = (name, templatePath, callback) =>
+  updateExec = spawn "#{buildCfnPath()}/cfn-update-stack", ['--template-file', templatePath, '--stack-name', name]
+  updateErrorText = ''
+  updateExec.stderr.on 'data', (data) -> updateErrorText += data.toString()
+  updateExec.stdout.on 'data', (data) -> console.log data.toString()
+  updateExec.on 'exit', (code) ->
+    if code is 0
+      callback? code
+      return
+    if not updateErrorText.match(/^cfn-update-stack:  Malformed input-Stack with ID\/name/)?
+      console.error updateErrorText
+      callback? code
+      return
+    createExec = spawn "#{buildCfnPath()}/cfn-create-stack", ['--template-file', templatePath, '--stack-name', name]
+    errorText = ''
+    createExec.stdout.on 'data', (data) -> console.log data.toString()
+    createExec.stderr.on 'data', (data) -> errorText += data.toString()
+    createExec.on 'exit', (code) ->
+      if code isnt 0
+        console.error errorText
+      callback? code
+
+
 commander.version '0.0.2'
 commander.usage '[options] <coffin template>'
 
@@ -82,10 +105,12 @@ validateCommand.action (template) ->
       validateTemplate fullCompiledPath
 
 stackCommand = commander.command 'stack [name] [template]'
-stackCommand.description 'Create or update the named stack using the compiled template.'
+stackCommand.description 'Create or update the named stack using the compiled template. Either an AWS_CLOUDFORMATION_HOME environment variable or a --cfn-home switch is required.'
 stackCommand.action (name, template) ->
   validateArgs()
-  console.log "todo: check to see if '#{name}' stack exists, either create or update based on '#{template}'"
+  compileTemplate template, (compiled) ->
+    writeJsonTemplate template, compiled, (fullCompiledPath) ->
+      updateOrCreateStack name, fullCompiledPath
 
 compileCommand = commander.command 'compile [template]'
 compileCommand.description 'Compile and write the template. The output file will have the same name as the coffin template plus a shiny new ".template" extension.'
