@@ -49,6 +49,9 @@
       margin: 0 auto;
       width: 90%;
     }
+    #editorTable {
+      width: 90%;
+    }
     .description {
      font-size: 1.2em;
       width: 100%;
@@ -57,10 +60,11 @@
     pre { background: #000; color: #fff; padding: 15px;}
 
     #before {
-      float: left;
     }
     #after {
-      float: right;
+    }
+    #embed {
+      height: 200px;
     }
 
     #icon {
@@ -90,7 +94,7 @@
       coffee-script dsl for aws cloudformation templates
     </div>
 
-    <table>
+    <table id="editorTable">
       <tr>
         <td>
           <div class="editor" id="before"></div>
