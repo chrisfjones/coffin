@@ -16,3 +16,5 @@
   - instead of requiring an output file
 - better error reporting
 - fix the weird . path thing
+
+- instead of relying on the cfn-tools, just call the rest api directly
