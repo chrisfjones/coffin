@@ -1,3 +1,4 @@
+
 class CloudFormationTemplateContext
   constructor: ->
     @_resources   = {}
@@ -156,3 +157,5 @@ module.exports = (func) ->
   template.Resources   = context._resources
   template.Outputs     = context._outputs
   template
+
+require('pkginfo')(module, 'version')
