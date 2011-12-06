@@ -85,31 +85,40 @@ updateOrCreateStack = (name, templatePath, callback) =>
   updateExec.stderr.on 'data', (data) -> updateErrorText += data.toString()
   updateExec.stdout.on 'data', (data) -> resultText += data.toString()
   updateExec.on 'exit', (code) ->
-    if code is 0
-      process.stdout.write "stack '#{name}' (updated) #{checkChar}\n"
-      process.stdout.write resultText
-      callback? code
+    if path.exists "{buildCfnPath()}/cfn-update-stack"
+      if code is 0
+        process.stdout.write "stack '#{name}' (updated) #{checkChar}\n"
+        process.stdout.write resultText
+        callback? code
+        return
+      if updateErrorText.match(/^cfn-update-stack:  Malformed input-No updates are to be performed/)?
+        process.stdout.write "stack '#{name}' (no changes)\n"
+        process.stdout.write resultText
+        callback? 0
+        return
+      if not updateErrorText.match(/^cfn-update-stack:  Malformed input-Stack with ID\/name/)?
+        console.error updateErrorText
+        callback? code
+        return
+    createStack name, templatePath, callback
+
+createStack = (name, templatePath, callback) =>
+  createExec = spawn "#{buildCfnPath()}/cfn-create-stack", ['--template-file', templatePath, '--stack-name', name]
+  errorText = ''
+  resultText = ''
+  createExec.stdout.on 'data', (data) -> resultText += data.toString()
+  createExec.stderr.on 'data', (data) -> errorText += data.toString()
+  createExec.on 'exit', (code) ->
+    if code isnt 0
+      if errorText.match(/^cfn-create-stack:  Malformed input-AlreadyExistsException/)?
+        process.stderr.write "stack '#{name}' already exists #{crossChar}\n"
+        return
+      process.stderr.write errorText
       return
-    if updateErrorText.match(/^cfn-update-stack:  Malformed input-No updates are to be performed/)?
-      process.stdout.write "stack '#{name}' (no changes)\n"
-      process.stdout.write resultText
-      callback? 0
-      return
-    if not updateErrorText.match(/^cfn-update-stack:  Malformed input-Stack with ID\/name/)?
-      console.error updateErrorText
-      callback? code
-      return
-    createExec = spawn "#{buildCfnPath()}/cfn-create-stack", ['--template-file', templatePath, '--stack-name', name]
-    errorText = ''
-    resultText = ''
-    createExec.stdout.on 'data', (data) -> resultText += data.toString()
-    createExec.stderr.on 'data', (data) -> errorText += data.toString()
-    createExec.on 'exit', (code) ->
-      if code isnt 0
-        console.error errorText
-      process.stdout.write "stack '#{name}' (created) #{checkChar}\n"
-      process.stdout.write resultText
-      callback? code
+    process.stdout.write "stack '#{name}' (created) #{checkChar}\n"
+    process.stdout.write resultText
+    callback? code
+
 
 pretty =
   switch: '-p, --pretty'
