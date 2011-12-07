@@ -71,12 +71,22 @@ generateOutputFileName = (source) ->
 
 buildCfnPath = ->
   cfnHome = commander['cfn-home'] || process.env.AWS_CLOUDFORMATION_HOME
-  return path.normalize "#{cfnHome}/bin"
+  return path.normalize path.join cfnHome, 'bin'
 
 validateTemplate = (templatePath, callback) =>
-  validateExec = "cfn-validate-template --template-file #{templatePath}"
-  exec "#{buildCfnPath()}/#{validateExec}", (err) ->
-    callback?(if err then 1 else 0)
+  validateExec = spawn path.join(buildCfnPath(), 'cfn-validate-template'), ['--template-file', templatePath]
+  errorText = ''
+  resultText = ''
+  validateExec.stderr.on 'data', (data) -> errorText += data.toString()
+  validateExec.stdout.on 'data', (data) -> resultText += data.toString()
+  validateExec.on 'exit', (code) ->
+    if code is 0
+      process.stdout.write "#{checkChar}\n"
+      process.stdout.write resultText
+    else
+      process.stdout.write "#{crossChar}\n"
+      process.stderr.write errorText
+    callback?(code)
 
 updateOrCreateStack = (name, templatePath, callback) =>
   updateExec = spawn "#{buildCfnPath()}/cfn-update-stack", ['--template-file', templatePath, '--stack-name', name]
@@ -147,7 +157,6 @@ validateCommand.action (template) ->
     tempFileName = generateTempFileName()
     writeJsonTemplate compiled, tempFileName, ->
       validateTemplate tempFileName, (resultCode) ->
-        process.stdout.write if resultCode is 0 then "#{checkChar}\n" else "#{crossChar}\n"
 
 stackCommand = commander.command 'stack [name] [template]'
 stackCommand.description 'Create or update the named stack using the compiled template. Either an AWS_CLOUDFORMATION_HOME environment variable or a --cfn-home switch is required.'
