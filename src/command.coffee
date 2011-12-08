@@ -95,7 +95,7 @@ updateOrCreateStack = (name, templatePath, callback) =>
   updateExec.stderr.on 'data', (data) -> updateErrorText += data.toString()
   updateExec.stdout.on 'data', (data) -> resultText += data.toString()
   updateExec.on 'exit', (code) ->
-    if path.exists "{buildCfnPath()}/cfn-update-stack"
+    if path.existsSync "#{buildCfnPath()}/cfn-update-stack"
       if code is 0
         process.stdout.write "stack '#{name}' (updated) #{checkChar}\n"
         process.stdout.write resultText
