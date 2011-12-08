@@ -1,1 +1,1 @@
- [![Build Status](https://secure.travis-ci.org/chrisfjones/coffin.png)](http://travis-ci.org/chrisfjones/coffin)
+ [![Build Status](https://secure.travis-ci.org/rkive/coffin.png)](http://travis-ci.org/rkive/coffin)
