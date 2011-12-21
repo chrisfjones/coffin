@@ -143,6 +143,8 @@ class CloudFormationTemplateContext
     'Fn::GetAZs': arg
   Region: 'AWS::Region'
   StackName: 'AWS::StackName'
+  InitScript: (arg) ->
+    UserData: @Base64 @Join '', arg
 
 module.exports.CloudFormationTemplateContext = CloudFormationTemplateContext
 

@@ -124,5 +124,21 @@ suite.addBatch
     'properties block is correct': (topic) ->
       assert.ok topic.Resources.a.Properties?
       assert.equal topic.Resources.a.Properties.a, 'b'
+  'when using @InitScript':
+    topic: ->
+      coffin ->
+        @AWS.EC2.Instance 'a',
+          @InitScript '''
+#!/bin/bash
+echo "hey"
+'''
+        @AWS.EC2.Instance 'b',
+          @InitScript 'init_script.sh'
+    'we are able to embed a nice shell script inline': (topic) ->
+      assert.ok topic.Resources.a.Properties.UserData?["Fn::Base64"]?["Fn::Join"]?
+      assert.equal 1, topic.Resources.a.Properties.UserData["Fn::Base64"]["Fn::Join"][1].length
+    'we are able to include a nice shell script file': (topic) ->
+      assert.ok topic.Resources.a.Properties.UserData?["Fn::Base64"]?["Fn::Join"]?
+      assert.equal 1, topic.Resources.a.Properties.UserData["Fn::Base64"]["Fn::Join"][1].length
 
 suite.run()
