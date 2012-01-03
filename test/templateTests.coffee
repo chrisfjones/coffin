@@ -137,8 +137,11 @@ echo "hey"
     'we are able to embed a nice shell script inline': (topic) ->
       assert.ok topic.Resources.a.Properties.UserData?["Fn::Base64"]?["Fn::Join"]?
       assert.equal 1, topic.Resources.a.Properties.UserData["Fn::Base64"]["Fn::Join"][1].length
+      assert.equal "#!/bin/bash\necho \"hey\"", topic.Resources.a.Properties.UserData["Fn::Base64"]["Fn::Join"][1]
+
     'we are able to include a nice shell script file': (topic) ->
-      assert.ok topic.Resources.a.Properties.UserData?["Fn::Base64"]?["Fn::Join"]?
-      assert.equal 1, topic.Resources.a.Properties.UserData["Fn::Base64"]["Fn::Join"][1].length
+      assert.ok topic.Resources.b.Properties.UserData?["Fn::Base64"]?["Fn::Join"]?
+      assert.equal 1, topic.Resources.b.Properties.UserData["Fn::Base64"]["Fn::Join"][1].length
+      assert.equal "#!/bin/bash\necho \"hey\"", topic.Resources.b.Properties.UserData["Fn::Base64"]["Fn::Join"][1]
 
 suite.run()

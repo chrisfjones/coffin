@@ -1,3 +1,4 @@
+fs = require 'fs'
 
 class CloudFormationTemplateContext
   constructor: ->
@@ -144,15 +145,18 @@ class CloudFormationTemplateContext
   Region: 'AWS::Region'
   StackName: 'AWS::StackName'
   InitScript: (arg) ->
-    UserData: @Base64 @Join '', arg
+    if arg.indexOf('#!') is 0
+      data = arg
+    else
+      data = fs.readFileSync(arg).toString()
+    UserData: @Base64 @Join '', data
 
 module.exports.CloudFormationTemplateContext = CloudFormationTemplateContext
 
 module.exports = (func) ->
   context = new CloudFormationTemplateContext
   func.apply context, [context]
-  template =
-    AWSTemplateFormatVersion: '2010-09-09'
+  template = AWSTemplateFormatVersion: '2010-09-09'
   template.Description = context._description if context._description?
   template.Parameters  = context._parameters
   template.Mappings    = context._mappings    if context._mappings?
