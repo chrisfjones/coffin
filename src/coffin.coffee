@@ -1,4 +1,6 @@
-fs = require 'fs'
+fs           = require 'fs'
+path         = require 'path'
+CoffeeScript = require 'coffee-script'
 
 class CloudFormationTemplateContext
   constructor: ->
@@ -145,11 +147,22 @@ class CloudFormationTemplateContext
   Region: 'AWS::Region'
   StackName: 'AWS::StackName'
   InitScript: (arg) ->
-    if arg.indexOf('#!') is 0
-      data = arg
+    if not path.existsSync(arg)
+      text = arg
     else
-      data = fs.readFileSync(arg).toString()
-    UserData: @Base64 @Join '', data
+      text = fs.readFileSync(arg).toString()
+    chunks = []
+    #todo: fix this abhoration of regex
+    pattern = /((.|\n)*?)#{([^}?]+)}?((.|\n)*)/
+    match = text.match pattern
+    while match
+      chunks.push match[1]
+      compiled = CoffeeScript.compile match[3], {bare: true}
+      chunks.push eval compiled
+      text = match[4]
+      match = text.match pattern
+    chunks.push text if text and text.length > 0
+    @Base64 @Join '', chunks
 
 module.exports.CloudFormationTemplateContext = CloudFormationTemplateContext
 

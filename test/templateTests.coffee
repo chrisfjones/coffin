@@ -127,21 +127,26 @@ suite.addBatch
   'when using @InitScript':
     topic: ->
       coffin ->
+        environment = 'test'
         @AWS.EC2.Instance 'a',
-          @InitScript '''
+          UserData: @InitScript '''
 #!/bin/bash
 echo "hey"
 '''
         @AWS.EC2.Instance 'b',
-          @InitScript 'init_script.sh'
+          UserData: @InitScript 'init_script.sh'
     'we are able to embed a nice shell script inline': (topic) ->
       assert.ok topic.Resources.a.Properties.UserData?["Fn::Base64"]?["Fn::Join"]?
-      assert.equal 1, topic.Resources.a.Properties.UserData["Fn::Base64"]["Fn::Join"][1].length
-      assert.equal "#!/bin/bash\necho \"hey\"", topic.Resources.a.Properties.UserData["Fn::Base64"]["Fn::Join"][1]
+      assert.equal topic.Resources.a.Properties.UserData["Fn::Base64"]["Fn::Join"][1].length, 1
+      assert.equal topic.Resources.a.Properties.UserData["Fn::Base64"]["Fn::Join"][1][0], "#!/bin/bash\necho \"hey\""
 
     'we are able to include a nice shell script file': (topic) ->
       assert.ok topic.Resources.b.Properties.UserData?["Fn::Base64"]?["Fn::Join"]?
-      assert.equal 1, topic.Resources.b.Properties.UserData["Fn::Base64"]["Fn::Join"][1].length
-      assert.equal "#!/bin/bash\necho \"hey\"", topic.Resources.b.Properties.UserData["Fn::Base64"]["Fn::Join"][1]
+      assert.equal topic.Resources.b.Properties.UserData["Fn::Base64"]["Fn::Join"][1].length, 5
+      assert.equal topic.Resources.b.Properties.UserData["Fn::Base64"]["Fn::Join"][1][0].indexOf("#!/bin/bash\necho \"hey\"\necho "), 0
+      assert.equal topic.Resources.b.Properties.UserData["Fn::Base64"]["Fn::Join"][1][1].Ref, 'param1'
+      assert.equal topic.Resources.b.Properties.UserData["Fn::Base64"]["Fn::Join"][1][2], "\necho "
+      assert.equal topic.Resources.b.Properties.UserData["Fn::Base64"]["Fn::Join"][1][3].Ref, 'param2'
+      assert.equal topic.Resources.b.Properties.UserData["Fn::Base64"]["Fn::Join"][1][4], "\necho \"ho\"\n"
 
 suite.run()
