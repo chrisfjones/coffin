@@ -13,5 +13,3 @@
 - fix the weird . path thing
 
 - instead of relying on the cfn-tools, just call the rest api directly
-
-- simple templating for cloud-init scripts
