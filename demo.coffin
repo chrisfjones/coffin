@@ -45,3 +45,8 @@ openPort = (port) ->
 @Output 'url',
   @Join '', 'http://', @GetAtt('webserver', 'PublicDnsName')
 @Output 'id', 'This description is optional', @Resources.webserver
+
+#If you're using the coffin command line tool, 
+#use @ARGV to capture args that appear after the template
+@Param.String 'arg', 
+  Default: @ARGV[0]
