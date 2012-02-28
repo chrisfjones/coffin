@@ -7,6 +7,15 @@ task 'build', ->
 task 'test', ->
   run 'cd test; coffee templateTests.coffee'
 
+task 'clean', ->
+  run 'npm remove -g coffin'
+
+task 'install', ->
+  run 'npm install -g .'
+
+task 'all', ->
+  run 'cake clean; cake test; cake build; cake install'
+
 run = (args...) ->
   for a in args
     switch typeof a
