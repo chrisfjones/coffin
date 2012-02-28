@@ -24,13 +24,15 @@ validateArgs = ->
     process.stdout.write commander.helpInformation()
     process.exit 0
 
-compileTemplate = (source, callback) =>
+compileTemplate = (source, params, callback) =>
   pre = "require('coffin') ->\n"
   fs.readFile source, (err, code) =>
     if err
       console.error "#{source} not found"
       process.exit 1
-    tabbedLines = ('  ' + line for line in code.toString().split '\n')
+    tabbedLines = []
+    tabbedLines.push "  @CoffinParams = #{JSON.stringify params}"
+    (tabbedLines.push('  ' + line) for line in code.toString().split '\n')
     tabbedLines.push '  return'
     code = tabbedLines.join '\n'
     code = pre + code
@@ -143,9 +145,9 @@ commander.option pretty.switch, pretty.text
 
 printCommand = commander.command 'print [template]'
 printCommand.description 'Print the compiled template.'
-printCommand.action (template) ->
+printCommand.action (template, params...) ->
   validateArgs()
-  compileTemplate template, (compiled) ->
+  compileTemplate template, params, (compiled) ->
     console.log compiled
 
 validateCommand = commander.command 'validate [template]'
