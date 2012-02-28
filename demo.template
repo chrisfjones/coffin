@@ -14,6 +14,9 @@
     "size": {
       "Default": "micro",
       "Type": "String"
+    },
+    "arg": {
+      "Default": ""
     }
   },
   "Mappings": {
