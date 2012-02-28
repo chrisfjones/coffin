@@ -7,3 +7,5 @@ examples/quick.coffin
 examples/simple.template
 
 examples/test_module.coffee
+
+tmp*

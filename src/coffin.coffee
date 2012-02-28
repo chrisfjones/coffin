@@ -1,4 +1,5 @@
 fs           = require 'fs'
+vm           = require 'vm'
 path         = require 'path'
 CoffeeScript = require 'coffee-script'
 
@@ -158,7 +159,7 @@ class CloudFormationTemplateContext
     while match
       chunks.push match[1]
       compiled = CoffeeScript.compile match[3], {bare: true}
-      chunks.push eval compiled
+      chunks.push vm.runInThisContext compiled
       text = match[4]
       match = text.match pattern
     chunks.push text if text and text.length > 0

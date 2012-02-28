@@ -31,13 +31,15 @@ compileTemplate = (source, params, callback) =>
       console.error "#{source} not found"
       process.exit 1
     tabbedLines = []
-    tabbedLines.push "  @CoffinParams = #{JSON.stringify params}"
+    if !params?
+      params = []
+    tabbedLines.push "  @ARGV = #{JSON.stringify params}"
     (tabbedLines.push('  ' + line) for line in code.toString().split '\n')
     tabbedLines.push '  return'
     code = tabbedLines.join '\n'
     code = pre + code
     compiled = CoffeeScript.compile code, {source, bare: false}
-    template = eval compiled
+    template = eval compiled, source
     templateString = if commander.pretty then JSON.stringify template, null, 2 else JSON.stringify template
     callback? templateString
 
@@ -152,9 +154,9 @@ printCommand.action (template, params...) ->
 
 validateCommand = commander.command 'validate [template]'
 validateCommand.description 'Validate the compiled template. Either an AWS_CLOUDFORMATION_HOME environment variable or a --cfn-home switch is required.'
-validateCommand.action (template) ->
+validateCommand.action (template, params...) ->
   validateArgs()
-  compileTemplate template, (compiled) ->
+  compileTemplate template, params, (compiled) ->
     process.stdout.write "#{coffinChar} #{template} "
     tempFileName = generateTempFileName()
     writeJsonTemplate compiled, tempFileName, ->
@@ -162,9 +164,9 @@ validateCommand.action (template) ->
 
 stackCommand = commander.command 'stack [name] [template]'
 stackCommand.description 'Create or update the named stack using the compiled template. Either an AWS_CLOUDFORMATION_HOME environment variable or a --cfn-home switch is required.'
-stackCommand.action (name, template) ->
+stackCommand.action (name, template, params...) ->
   validateArgs()
-  compileTemplate template, (compiled) ->
+  compileTemplate template, params, (compiled) ->
     tempFileName = generateTempFileName()
     writeJsonTemplate compiled, tempFileName, ->
       process.stdout.write "#{coffinChar} #{template} -> "
@@ -172,9 +174,9 @@ stackCommand.action (name, template) ->
 
 compileCommand = commander.command 'compile [template]'
 compileCommand.description 'Compile and write the template. The output file will have the same name as the coffin template plus a shiny new ".template" extension.'
-compileCommand.action (template) ->
+compileCommand.action (template, params...) ->
   validateArgs()
-  compileTemplate template, (compiled) ->
+  compileTemplate template, params, (compiled) ->
     process.stdout.write "#{coffinChar} #{template} -> "
     fileName = generateOutputFileName template
     writeJsonTemplate compiled, fileName, ->
