@@ -31,13 +31,15 @@ compileTemplate = (source, params, callback) =>
       console.error "#{source} not found"
       process.exit 1
     tabbedLines = []
+    if !params?
+      params = []
     tabbedLines.push "  @ARGV = #{JSON.stringify params}"
     (tabbedLines.push('  ' + line) for line in code.toString().split '\n')
     tabbedLines.push '  return'
     code = tabbedLines.join '\n'
     code = pre + code
     compiled = CoffeeScript.compile code, {source, bare: false}
-    template = eval compiled
+    template = eval compiled, source
     templateString = if commander.pretty then JSON.stringify template, null, 2 else JSON.stringify template
     callback? templateString
 
