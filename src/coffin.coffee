@@ -35,6 +35,11 @@ class CloudFormationTemplateContext
         SecurityGroupIngress: null
         Volume: null
         VolumeAttachment: null
+      ElastiCache:
+        CacheCluster: null
+        ParameterGroup: null
+        SecurityGroup: null
+        SecurityGroupIngress: null
       ElasticBeanstalk:
         Application: null
         Environment: null
