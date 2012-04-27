@@ -9,3 +9,6 @@ examples/simple.template
 examples/test_module.coffee
 
 tmp*
+
+*.iml
+.idea/
