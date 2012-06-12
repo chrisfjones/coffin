@@ -124,6 +124,8 @@ suite.addBatch
     'properties block is correct': (topic) ->
       assert.ok topic.Resources.a.Properties?
       assert.equal topic.Resources.a.Properties.a, 'b'
+    'type is in the right place': (topic) ->
+      assert.ok topic.Resources.a.Type is 'AWS::EC2::Instance'
   'when using @InitScript':
     topic: ->
       coffin ->
