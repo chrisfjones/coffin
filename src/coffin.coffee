@@ -150,8 +150,8 @@ class CloudFormationTemplateContext
     'Fn::Base64': arg
   GetAZs: (arg) ->
     'Fn::GetAZs': arg
-  Region: 'AWS::Region'
-  StackName: 'AWS::StackName'
+  Region: Ref: 'AWS::Region'
+  StackName: Ref: 'AWS::StackName'
   InitScript: (arg) ->
     if not path.existsSync(arg)
       text = arg
