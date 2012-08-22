@@ -25,7 +25,7 @@ validateArgs = ->
     process.exit 0
 
 compileTemplate = (source, params, callback) =>
-  pre = "require('coffin') ->\n"
+  pre = "require('../lib/coffin') ->\n"
   fs.readFile source, (err, code) =>
     if err
       console.error "#{source} not found"
