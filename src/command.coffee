@@ -78,14 +78,9 @@ generateTempFileName = ->
   name = "#{dateStamp.toString(36)}-#{process.pid.toString(36)}-#{rand}.template"
   path.join tmpDir, name
 
-generateOutputFileName = (source) ->
+generateOutputFileName = (source, extension) ->
   base = commander.output || path.dirname source
-  filename  = path.basename(source, path.extname(source)) + '.template'
-  path.join base, filename
-
-generateCoffinOutputFileName = (source) ->
-  base = commander.output || path.dirname source
-  filename = path.basename(source, path.extname(source)) + '.coffin'
+  filename  = path.basename(source, path.extname(source)) + extension
   path.join base, filename
 
 buildCfnPath = ->
@@ -193,7 +188,7 @@ compileCommand.action (template, params...) ->
   validateArgs()
   compileTemplate template, params, (compiled) ->
     process.stdout.write "#{coffinChar} #{template} -> "
-    fileName = generateOutputFileName template
+    fileName = generateOutputFileName template, ".template"
     writeJsonTemplate compiled, fileName, ->
       process.stdout.write "#{fileName}\n"
 
@@ -203,9 +198,9 @@ convertCommand.action (cfnTemplate) ->
   validateArgs()
   convertCfnTemplate cfnTemplate, (converted) ->
     process.stdout.write "#{coffinChar} #{cfnTemplate} -> "
-    fileName = generateCoffinOutputFileName cfnTemplate
+    fileName = generateOutputFileName cfnTemplate, ".coffin"
     writeJsonTemplate converted, fileName, ->
-      process.stdout.write "#{fileName}"
+      process.stdout.write "#{fileName}\n"
 
 
 
