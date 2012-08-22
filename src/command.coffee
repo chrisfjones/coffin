@@ -4,6 +4,7 @@ colors         = require 'colors'
 commander      = require 'commander'
 CoffeeScript   = require 'coffee-script'
 {spawn, exec}  = require 'child_process'
+parseTemplate  = require './parseTemplate'
 coffinChar     = '\u26B0'.grey
 checkChar      = '\u2713'.green
 crossChar      = '\u2717'.red
@@ -43,6 +44,14 @@ compileTemplate = (source, params, callback) =>
     templateString = if commander.pretty then JSON.stringify template, null, 2 else JSON.stringify template
     callback? templateString
 
+convertCfnTemplate = (source, callback) ->
+  fs.readFile source, "utf8", (err, cfnTemp) ->
+    if err
+      console.log "#{source} not found"
+      process.exit 1
+    converted = parseTemplate JSON.parse(cfnTemp)
+    callback converted
+
 writeJsonTemplate = (json, templatePath, callback) ->
   write = ->
     json = ' ' if json.length <= 0
@@ -68,9 +77,10 @@ generateTempFileName = ->
   rand = (Math.random() * 0x100000000 + 1).toString(36)
   name = "#{dateStamp.toString(36)}-#{process.pid.toString(36)}-#{rand}.template"
   path.join tmpDir, name
-generateOutputFileName = (source) ->
+
+generateOutputFileName = (source, extension) ->
   base = commander.output || path.dirname source
-  filename  = path.basename(source, path.extname(source)) + '.template'
+  filename  = path.basename(source, path.extname(source)) + extension
   path.join base, filename
 
 buildCfnPath = ->
@@ -178,9 +188,21 @@ compileCommand.action (template, params...) ->
   validateArgs()
   compileTemplate template, params, (compiled) ->
     process.stdout.write "#{coffinChar} #{template} -> "
-    fileName = generateOutputFileName template
+    fileName = generateOutputFileName template, ".template"
     writeJsonTemplate compiled, fileName, ->
       process.stdout.write "#{fileName}\n"
+
+convertCommand = commander.command 'convert [cfn-template]'
+convertCommand.description 'Convert the given cloud formation template to coffin (or as best as we can). It will output a file of the same name with ".coffin" extension.'
+convertCommand.action (cfnTemplate) ->
+  validateArgs()
+  convertCfnTemplate cfnTemplate, (converted) ->
+    process.stdout.write "#{coffinChar} #{cfnTemplate} -> "
+    fileName = generateOutputFileName cfnTemplate, ".coffin"
+    writeJsonTemplate converted, fileName, ->
+      process.stdout.write "#{fileName}\n"
+
+
 
 showHelp = ->
   process.stdout.write commander.helpInformation()
