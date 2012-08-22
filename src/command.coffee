@@ -44,13 +44,13 @@ compileTemplate = (source, params, callback) =>
     templateString = if commander.pretty then JSON.stringify template, null, 2 else JSON.stringify template
     callback? templateString
 
-convertCfnTemplate = (source, callback) ->
+decompileCfnTemplate = (source, callback) ->
   fs.readFile source, "utf8", (err, cfnTemp) ->
     if err
       console.log "#{source} not found"
       process.exit 1
-    converted = parseTemplate JSON.parse(cfnTemp)
-    callback converted
+    decompiled = parseTemplate JSON.parse(cfnTemp)
+    callback decompiled
 
 writeJsonTemplate = (json, templatePath, callback) ->
   write = ->
@@ -192,14 +192,14 @@ compileCommand.action (template, params...) ->
     writeJsonTemplate compiled, fileName, ->
       process.stdout.write "#{fileName}\n"
 
-convertCommand = commander.command 'convert [cfn-template]'
-convertCommand.description 'Convert the given cloud formation template to coffin (or as best as we can). It will output a file of the same name with ".coffin" extension.'
-convertCommand.action (cfnTemplate) ->
+decompileCommand = commander.command 'decompile [cfn-template]'
+decompileCommand.description 'experimental - Convert the given cloud formation template to coffin (or as best as we can). It will output a file of the same name with ".coffin" extension.'
+decompileCommand.action (cfnTemplate) ->
   validateArgs()
-  convertCfnTemplate cfnTemplate, (converted) ->
+  decompileCfnTemplate cfnTemplate, (decompiled) ->
     process.stdout.write "#{coffinChar} #{cfnTemplate} -> "
     fileName = generateOutputFileName cfnTemplate, ".coffin"
-    writeJsonTemplate converted, fileName, ->
+    writeJsonTemplate decompiled, fileName, ->
       process.stdout.write "#{fileName}\n"
 
 
