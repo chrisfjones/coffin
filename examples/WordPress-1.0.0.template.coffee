@@ -10,8 +10,7 @@ WordPress is web software you can use to create a beautiful website or blog. Thi
 
   #vars
   maxPort = '65535'
-  awsRegion = Ref: @Region
-  allZones = @GetAZs awsRegion
+  allZones = @GetAZs @Region
   loadBalancerDns = @GetAtt('ElasticLoadBalancer', 'DNSName') #todo: want -> @Resources.ElasticLoadBalancer.DNSName
   openPort = (port) ->
     FromPort: port
@@ -178,7 +177,7 @@ WordPress is web software you can use to create a beautiful website or blog. Thi
     Engine: 'MySQL'
     DBName: @Params.WordPressDBName
     Port: @Params.WordPressDBPort
-    MultiAZ : @FindInMap 'AWSRegionCapabilities', awsRegion, 'RDSMultiAZ'
+    MultiAZ : @FindInMap 'AWSRegionCapabilities', @Region, 'RDSMultiAZ'
     MasterUsername: @Params.WordPressUser
     DBInstanceClass: 'db.m1.small'
     DBSecurityGroups: [ @Resources.DBSecurityGroup ]
@@ -201,7 +200,7 @@ WordPress is web software you can use to create a beautiful website or blog. Thi
       ]
   @AWS.AutoScaling.LaunchConfiguration 'LaunchConfig',
     SecurityGroups: [ @Resources.EC2SecurityGroup ]
-    ImageId: @FindInMap 'AWSRegionArch2AMI', awsRegion, @FindInMap('AWSInstanceType2Arch', @Params.InstanceType, 'Arch')
+    ImageId: @FindInMap 'AWSRegionArch2AMI', @Region, @FindInMap('AWSInstanceType2Arch', @Params.InstanceType, 'Arch')
     UserData:
       @Base64 @Join ':', @Params.WordPressDBName, @Params.WordPressUser, @Params.WordPressPwd, @Params.WordPressDBPort, @GetAtt('WordPressDB', 'Endpoint.Address'), @Params.WebServerPort, loadBalancerDns
     KeyName: @Params.KeyName

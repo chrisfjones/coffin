@@ -148,7 +148,7 @@ echo "hey"
       assert.equal topic.Resources.b.Properties.UserData["Fn::Base64"]["Fn::Join"][1][0].indexOf("#!/bin/bash\necho \"hey\"\necho "), 0
       assert.equal topic.Resources.b.Properties.UserData["Fn::Base64"]["Fn::Join"][1][1].Ref, 'param1'
       assert.equal topic.Resources.b.Properties.UserData["Fn::Base64"]["Fn::Join"][1][2], "\necho "
-      assert.equal topic.Resources.b.Properties.UserData["Fn::Base64"]["Fn::Join"][1][3].Ref, 'param2'
+      assert.equal topic.Resources.b.Properties.UserData["Fn::Base64"]["Fn::Join"][1][3].Ref, 'AWS::Region'
       assert.equal topic.Resources.b.Properties.UserData["Fn::Base64"]["Fn::Join"][1][4], "\necho \"ho\"\n"
 
 suite.run()
