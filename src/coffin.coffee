@@ -159,7 +159,7 @@ class CloudFormationTemplateContext
       text = fs.readFileSync(arg).toString()
     chunks = []
     #todo: fix this abhoration of regex
-    pattern = /((.|\n)*?)#{([^}?]+)}?((.|\n)*)/
+    pattern = /((.|\n)*?)%{([^}?]+)}?((.|\n)*)/
     match = text.match pattern
     while match
       chunks.push match[1]

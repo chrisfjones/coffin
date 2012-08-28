@@ -131,16 +131,18 @@ suite.addBatch
       coffin ->
         environment = 'test'
         @AWS.EC2.Instance 'a',
-          UserData: @InitScript '''
+          UserData: @InitScript """
 #!/bin/bash
-echo "hey"
-'''
+echo "hey %{@Region}"
+"""
         @AWS.EC2.Instance 'b',
           UserData: @InitScript 'init_script.sh'
     'we are able to embed a nice shell script inline': (topic) ->
       assert.ok topic.Resources.a.Properties.UserData?["Fn::Base64"]?["Fn::Join"]?
-      assert.equal topic.Resources.a.Properties.UserData["Fn::Base64"]["Fn::Join"][1].length, 1
-      assert.equal topic.Resources.a.Properties.UserData["Fn::Base64"]["Fn::Join"][1][0], "#!/bin/bash\necho \"hey\""
+      assert.equal topic.Resources.a.Properties.UserData["Fn::Base64"]["Fn::Join"][1].length, 3
+      assert.equal topic.Resources.a.Properties.UserData["Fn::Base64"]["Fn::Join"][1][0], "#!/bin/bash\necho \"hey "
+      assert.equal topic.Resources.a.Properties.UserData["Fn::Base64"]["Fn::Join"][1][1].Ref, 'AWS::Region'
+      assert.equal topic.Resources.a.Properties.UserData["Fn::Base64"]["Fn::Join"][1][2], "\""
 
     'we are able to include a nice shell script file': (topic) ->
       assert.ok topic.Resources.b.Properties.UserData?["Fn::Base64"]?["Fn::Join"]?

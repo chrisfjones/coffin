@@ -1,6 +1,6 @@
 {
   "name":         "coffin",
-  "version":      "0.2.0",
+  "version":      "0.2.1",
   "description":  "Coffee dsl for aws cloudformation",
   "keywords":     ["coffeescript", "coffee-script", "aws", "cloudformation"],
   "author":       "Chris Jones <chris.f.jones@gmail.com> (https://github.com/chrisfjones/)",
