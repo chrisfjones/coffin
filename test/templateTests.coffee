@@ -1,8 +1,9 @@
-vows        = require 'vows'
-assert      = require 'assert'
-fs          = require 'fs'
-path        = require 'path'
-coffin = require '../lib/coffin'
+vows          = require 'vows'
+assert        = require 'assert'
+fs            = require 'fs'
+path          = require 'path'
+coffin        = require '../lib/coffin'
+commandHelper = require '../lib/commandHelper'
 
 @assertListsEqual = (actualList, expectedList) ->
   assert.equal actualList.length, expectedList.length
@@ -152,5 +153,23 @@ echo "hey %{@Region}"
       assert.equal topic.Resources.b.Properties.UserData["Fn::Base64"]["Fn::Join"][1][2], "\necho "
       assert.equal topic.Resources.b.Properties.UserData["Fn::Base64"]["Fn::Join"][1][3].Ref, 'AWS::Region'
       assert.equal topic.Resources.b.Properties.UserData["Fn::Base64"]["Fn::Join"][1][4], "\necho \"ho\"\n"
+
+  'when creating a stack':
+    topic: ->
+      coffin ->
+        describeAnyResourceStatement =
+          Effect:"Allow"
+          Action:"cloudformation:DescribeStackResource"
+          Resource:"*"
+        rootPolicy =
+          PolicyName: "root"
+          PolicyDocument:
+            Statement:[ describeAnyResourceStatement ]
+        @AWS.IAM.User 'CfnUser',
+          Path: "/"
+          Policies: [ rootPolicy ]
+
+    'we recognize that an IAM resource was used (so we can add the proper capabilities flag to the stack commands': (topic) ->
+      assert.ok commandHelper.doesTemplateReferenceIAM JSON.stringify topic
 
 suite.run()

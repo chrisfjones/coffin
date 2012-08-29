@@ -5,6 +5,7 @@ commander      = require 'commander'
 CoffeeScript   = require 'coffee-script'
 {spawn, exec}  = require 'child_process'
 parseTemplate  = require './parseTemplate'
+commandHelper  = require './commandHelper'
 coffinChar     = '\u26B0'.grey
 checkChar      = '\u2713'.green
 crossChar      = '\u2717'.red
@@ -102,14 +103,19 @@ validateTemplate = (templatePath, callback) =>
       process.stderr.write errorText
     callback?(code)
 
-updateOrCreateStack = (name, templatePath, callback) =>
-  updateExec = spawn "#{buildCfnPath()}/cfn-update-stack", ['--template-file', templatePath, '--stack-name', name]
+updateOrCreateStack = (name, templatePath, compiled, callback) =>
+  args = ['--template-file', templatePath, '--stack-name', name]
+  if commandHelper.doesTemplateReferenceIAM compiled
+    args.push '-c'
+    args.push 'CAPABILITY_IAM'
+  updateExec = spawn "#{buildCfnPath()}/cfn-update-stack", args
   updateErrorText = ''
   resultText = ''
   updateExec.stderr.on 'data', (data) -> updateErrorText += data.toString()
   updateExec.stdout.on 'data', (data) -> resultText += data.toString()
   updateExec.on 'exit', (code) ->
-    if path.existsSync "#{buildCfnPath()}/cfn-update-stack"
+    existsSyncFunc = if fs.existsSync? then fs.existsSync else path.existsSync
+    if existsSyncFunc "#{buildCfnPath()}/cfn-update-stack"
       if code is 0
         process.stdout.write "stack '#{name}' (updated) #{checkChar}\n"
         process.stdout.write resultText
@@ -124,10 +130,14 @@ updateOrCreateStack = (name, templatePath, callback) =>
         console.error updateErrorText
         callback? code
         return
-    createStack name, templatePath, callback
+    createStack name, templatePath, compiled, callback
 
-createStack = (name, templatePath, callback) =>
-  createExec = spawn "#{buildCfnPath()}/cfn-create-stack", ['--template-file', templatePath, '--stack-name', name]
+createStack = (name, templatePath, compiled, callback) =>
+  args = ['--template-file', templatePath, '--stack-name', name]
+  if commandHelper.doesTemplateReferenceIAM compiled
+    args.push '-c'
+    args.push 'CAPABILITY_IAM'
+  createExec = spawn "#{buildCfnPath()}/cfn-create-stack", args
   errorText = ''
   resultText = ''
   createExec.stdout.on 'data', (data) -> resultText += data.toString()
@@ -180,7 +190,7 @@ stackCommand.action (name, template, params...) ->
     tempFileName = generateTempFileName()
     writeJsonTemplate compiled, tempFileName, ->
       process.stdout.write "#{coffinChar} #{template} -> "
-      updateOrCreateStack name, tempFileName, (resultCode) ->
+      updateOrCreateStack name, tempFileName, compiled, (resultCode) ->
 
 compileCommand = commander.command 'compile [template]'
 compileCommand.description 'Compile and write the template. The output file will have the same name as the coffin template plus a shiny new ".template" extension.'
