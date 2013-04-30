@@ -20,6 +20,8 @@ class CloudFormationTemplateContext
         ScalingPolicy: null
         Trigger: null
       CloudFormation:
+        Authentication: null
+        CustomResource: null
         Stack: null
         WaitCondition: null
         WaitConditionHandle: null
@@ -27,14 +29,33 @@ class CloudFormationTemplateContext
         Distribution: null
       CloudWatch:
         Alarm: null
+      DynamoDB: null
+        Table: null
       EC2:
+        CustomerGateway: null
+        DHCPOptions: null
         EIP: null
         EIPAssociation: null
         Instance: null
+        InternetGateway: null
+        NetworkAcl: null
+        NetworkAclEntry: null
+        NetworkInterface: null
+        Route: null
+        RouteTable: null
         SecurityGroup: null
         SecurityGroupIngress: null
+        SecurityGroupEgress: null
+        Subnet: null
+        SubnetNetworkAclAssociation: null
+        SubnetRouteTableAssociation: null
         Volume: null
         VolumeAttachment: null
+        VPC: null
+        VPCDHCPOptionsAssociation: null
+        VPCGatewayAttachment: null
+        VPNConnection: null
+        VPNGateway: null
       ElastiCache:
         CacheCluster: null
         ParameterGroup: null
@@ -48,15 +69,21 @@ class CloudFormationTemplateContext
       IAM:
         AccessKey: null
         Group: null
+        InstanceProfile: null
         Policy: null
         User: null
         UserToGroupAddition: null
       RDS:
         DBInstance: null
+        DBParameterGroup: null
+        DBSubnetGroup: null
         DBSecurityGroup: null
+        DBSecurityGroupIngress: null
       Route53:
         RecordSet: null
         RecordSetGroup: null
+      SDB: null
+        Domain: null
       S3:
         Bucket: null
         BucketPolicy: null
