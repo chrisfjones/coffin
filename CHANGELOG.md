@@ -2,6 +2,7 @@ coffin@0.2.2 - 8-29-2012
 ---------------------------
 - Added support for DynamoDB, SDB, VPC
 - Now testing under node 0.10.x
+- MIT License
 
 coffin@0.2.2 - 8-29-2012
 ---------------------------
