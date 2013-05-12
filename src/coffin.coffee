@@ -31,6 +31,7 @@ class CloudFormationTemplateContext
         EIP: null
         EIPAssociation: null
         Instance: null
+        NetworkInterface: null
         SecurityGroup: null
         SecurityGroupIngress: null
         Volume: null
@@ -48,6 +49,7 @@ class CloudFormationTemplateContext
       IAM:
         AccessKey: null
         Group: null
+        InstanceProfile: null
         Policy: null
         User: null
         UserToGroupAddition: null
