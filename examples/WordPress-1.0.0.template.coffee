@@ -20,36 +20,36 @@ WordPress is web software you can use to create a beautiful website or blog. Thi
 
   #params
   @Param.String 'KeyName', 'Name of an existing EC2 KeyPair to enable SSH access into the WordPress web server'
-  @Param.String 'WordPressDBName', 'The WordPress database name'
+  @Param.String 'WordPressDBName', 'The WordPress database name',
     Default: 'wordpress'
     MinLength: '1'
     MaxLength: '64'
     AllowedPattern: "[^\\x00\\\\/.]*[^\\x00\\\\/. ]"
-  @Param.String 'WordPressUser', 'The WordPress database admin account username'
+  @Param.String 'WordPressUser', 'The WordPress database admin account username',
     Default: 'admin'
     NoEcho: 'true'
     MinLength: '1'
     MaxLength: '16'
     AllowedPattern : '[a-zA-Z][a-zA-Z0-9]*'
-  @Param.String 'WordPressPwd', 'The WordPress database admin account password'
+  @Param.String 'WordPressPwd', 'The WordPress database admin account password',
     Default: 'admin'
     NoEcho: 'true'
     MinLength: '1'
     MaxLength: '41'
     AllowedPattern : '[a-zA-Z0-9]*'
-  @Param.Number 'GroupSize', 'The initial number of EC2 instances for the WordPress web server'
+  @Param.Number 'GroupSize', 'The initial number of EC2 instances for the WordPress web server',
     Default: '1'
     MinValue: '0'
-  @Param.String 'InstanceType', 'The type of EC2 instances used for the WordPress web server'
+  @Param.String 'InstanceType', 'The type of EC2 instances used for the WordPress web server',
     Default: 'm1.small'
     AllowedPattern : '[a-zA-Z0-9\\.]+'
-  @Param.String 'OperatorEmail', 'Email address to notify if there are any operational issues'
+  @Param.String 'OperatorEmail', 'Email address to notify if there are any operational issues',
     Default: 'nobody@amazon.com'
-  @Param.Number 'WordPressDBPort', 'TCP/IP port for the WordPress database'
+  @Param.Number 'WordPressDBPort', 'TCP/IP port for the WordPress database',
     Default: '3306'
     MinValue: '1150'
     MaxValue: maxPort
-  @Param.Number 'WebServerPort', 'TCP/IP port for the WordPress web server'
+  @Param.Number 'WebServerPort', 'TCP/IP port for the WordPress web server',
     Default: '8888'
     MinValue: '1'
     MaxValue: maxPort
@@ -107,7 +107,6 @@ WordPress is web software you can use to create a beautiful website or blog. Thi
     ]
   @AWS.CloudWatch.Alarm 'CPUAlarmHigh',
     AlarmDescription: 'Alarm if CPU too high or metric disappears indicating instance is down'
-    Threshold: '10'
     EvaluationPeriods: '1'
     Statistic: 'Average'
     Threshold: '10'

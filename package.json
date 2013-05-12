@@ -1,19 +1,19 @@
 {
   "name":         "coffin",
-  "version":      "0.2.2",
+  "version":      "0.2.3",
   "description":  "Coffee dsl for aws cloudformation",
   "keywords":     ["coffeescript", "coffee-script", "aws", "cloudformation"],
   "author":       "Chris Jones <chris.f.jones@gmail.com> (https://github.com/chrisfjones/)",
-  "contributors": ["Addison Higham (https://github.com/addisonj)", "Aaron Bento (https://github.com/rkive)"],
+  "contributors": ["Addison Higham (https://github.com/addisonj)", "Aaron Bento (https://github.com/rkive)", "Ole Michaelis (https://github.com/nesQuick)"],
   "homepage":     "http://chrisfjones.github.com/coffin",
   "repositories": [
        {
-            "type": "git", 
+            "type": "git",
             "url": "git@github.com:chrisfjones/coffin.git"
        }
   ],
   "bugs": {
-       "url": "http://github.com/chrisfjones/coffin/issues" 
+       "url": "http://github.com/chrisfjones/coffin/issues"
   },
   "engines":      {
     "node":       ">=0.4.0"

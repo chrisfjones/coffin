@@ -29,7 +29,7 @@ class CloudFormationTemplateContext
         Distribution: null
       CloudWatch:
         Alarm: null
-      DynamoDB: null
+      DynamoDB:
         Table: null
       EC2:
         CustomerGateway: null
@@ -82,7 +82,7 @@ class CloudFormationTemplateContext
       Route53:
         RecordSet: null
         RecordSetGroup: null
-      SDB: null
+      SDB:
         Domain: null
       S3:
         Bucket: null
@@ -180,7 +180,8 @@ class CloudFormationTemplateContext
   Region: Ref: 'AWS::Region'
   StackName: Ref: 'AWS::StackName'
   InitScript: (arg) ->
-    if not path.existsSync(arg)
+    existsSyncFunc = if fs.existsSync? then fs.existsSync else path.existsSync
+    if not existsSyncFunc(arg)
       text = arg
     else
       text = fs.readFileSync(arg).toString()

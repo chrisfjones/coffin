@@ -78,7 +78,7 @@ suite.addBatch
   'when using mappings':
     topic: ->
       coffin ->
-        @Mapping 'AWSRegionArch2AMI'
+        @Mapping 'AWSRegionArch2AMI',
           'us-east-1':
             32: "ami-f417e49d"
             64: "ami-f617e49f"
